@@ -1,5 +1,6 @@
 package mvc;
 
+
 /**
  * <b>The Controller class</b>
  * 
@@ -37,6 +38,16 @@ public class Controller {
 	 * It synchronize the view and model in order to have a playable game
 	 */
 	public void play() {
-		// Play!
+		m.newPlayer("Skia");
+		m.newPlayer("Troll");
+		m.initMap();
+		
+		while(true) {
+			/* e = view.getEvent()
+			 * 
+			 * switch (e) {
+			 * }
+			 */
+		}
 	}
 }
