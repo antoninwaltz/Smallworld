@@ -5,6 +5,7 @@ import java.util.HashMap;
 import model.Map;
 import model.MapType;
 import model.Player;
+import modelExceptions.ExistingPlayer;
 
 /**
  * <b>The Model class</b>
@@ -16,6 +17,7 @@ import model.Player;
 public class Model {
 	private Map _map;
 	private HashMap<String, Player> _players;
+	private Player _activePlayer;
 	/**
 	 * <b>Constructor of the model</b>
 	 * It only build the attributes
@@ -43,8 +45,10 @@ public class Model {
 		System.out.println("Map initialized");
 	}
 	
-	public void newPlayer(String name) {
+	public void newPlayer(String name) throws ExistingPlayer {
 		System.out.print("New player: "+name+"... ");
+		if(_players.containsKey(name))
+			throw new ExistingPlayer();
 		_players.put(name, new Player(name));
 		System.out.println("OK");
 	}

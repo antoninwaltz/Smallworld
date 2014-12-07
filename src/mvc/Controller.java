@@ -1,5 +1,7 @@
 package mvc;
 
+import modelExceptions.ExistingPlayer;
+
 
 /**
  * <b>The Controller class</b>
@@ -38,11 +40,17 @@ public class Controller {
 	 * It synchronize the view and model in order to have a playable game
 	 */
 	public void play() {
-		m.newPlayer("Skia");
-		m.newPlayer("Troll");
+		try {
+			m.newPlayer("Skia");
+			m.newPlayer("Troll");
+			m.newPlayer("Skia");
+		} catch (ExistingPlayer e) {
+			System.err.println(e.getMessage());
+		}
 		m.initMap();
 		
 		while(true) {
+			break;
 			/* e = view.getEvent()
 			 * 
 			 * switch (e) {

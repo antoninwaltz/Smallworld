@@ -1,21 +1,25 @@
 package model;
 
+import java.util.HashMap;
 
-import java.util.ArrayList;
-
+import modelExceptions.TooFewToken;
 import modelExceptions.TooPoor;
+
+
 
 public class Player {
 	private String _name;
 	private int _money;
 	private Folk _currentFolk;
 	private Folk _decliningFolk;
+	private HashMap<Integer, Case> _ownedCases;
 	
 	public Player(String name) {
 		this._name = name;
 		this._money = 5;
 		this._currentFolk = null;
 		this._decliningFolk = null;
+		this._ownedCases = new HashMap<>();
 	}
 	
 	/* === START (GET/SET)ERS === */
@@ -51,6 +55,12 @@ public class Player {
 	}
 	
 	public void payGold(int q) throws TooPoor {
+		if(this._money < q)
+			throw new TooPoor();
 		this._money -= q;
+	}
+	
+	public void attackCase(int id) throws TooFewToken {
+		// TODO
 	}
 }
