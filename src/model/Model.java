@@ -1,10 +1,7 @@
-package mvc;
+package model;
 
 import java.util.HashMap;
 
-import model.Map;
-import model.MapType;
-import model.Player;
 import modelExceptions.ExistingPlayer;
 
 /**

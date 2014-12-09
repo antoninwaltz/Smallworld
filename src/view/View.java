@@ -1,4 +1,6 @@
-package mvc;
+package view;
+
+import model.Model;
 
 
 /**

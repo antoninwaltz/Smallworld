@@ -1,5 +1,7 @@
-package mvc;
+package controler;
 
+import view.View;
+import model.Model;
 import modelExceptions.ExistingPlayer;
 
 

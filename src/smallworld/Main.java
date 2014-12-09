@@ -1,4 +1,8 @@
-package mvc;
+package smallworld;
+
+import controler.Controller;
+import view.View;
+import model.Model;
 
 /**
  * The Main class
@@ -13,3 +17,4 @@ public class Main {
 		c.play();
 	}
 }
+
