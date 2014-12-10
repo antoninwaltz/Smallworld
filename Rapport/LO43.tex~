@@ -74,7 +74,7 @@
 \newpage
 	\chapter{Spécifications UML}
 		\section{Diagramme d'utilisation}
-			%TODO Problème avec image é_è
+			%TODO Problème avec les images é_è
 			\begin{figure}
 				\begin{center}
 				\includegraphics[width=500px]{use_case.png} 
