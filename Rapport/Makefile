@@ -3,7 +3,7 @@ TARGET := LO43.pdf
 
 .PHONY: all clean distclean
 
-all: $(TARGET) clean
+all: $(TARGET)
 
 %.pdf: %.tex
 	echo "Building pdf"
@@ -12,7 +12,7 @@ all: $(TARGET) clean
 	$(LATEX) --shell-escape $<
 
 clean:
-	rm -f *.log *.nav *.snm *.aux *.out *.toc *.pyg
+	rm -f *.log *.nav *.snm *.aux *.out *.toc *.pyg *.lof
 
 distclean: clean
 	rm -f $(TARGET)
