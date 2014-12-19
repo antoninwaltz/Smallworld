@@ -5,9 +5,7 @@
 %   SmallUTBMworld
 %
 %
-
 \documentclass[a4paper]{report}
-
 %packages
 \usepackage[utf8]{inputenc}
 \usepackage[francais]{babel}
@@ -19,11 +17,8 @@
 \usepackage{listings}
 \usepackage[colorlinks=true,allcolors=black]{hyperref}
 \usepackage[font=small,labelfont=bf,margin=\parindent,tableposition=top]{caption}
-
 \setcounter{tocdepth}{2}
-
 \begin{document}
-
 \begin{titlepage}
     \includegraphics[width=0.4\textwidth]{logo_utbm.png}
     \begin{center}
@@ -43,12 +38,9 @@
         {\large Automne 2014}
     \end{center}
 \end{titlepage}
-
-
 \newpage
 \tableofcontents
 \listoffigures
-
 \newpage
 \chapter{Présentation du projet}
 \par
@@ -67,14 +59,12 @@ et choisir une nouvelle civilisation.
 \par
 Nous avons adapter les peuples et les pouvoirs à l'environnement de l'école, en
 respectant les régles de base du jeu.
-%TODO à compléter
-
 \newpage
 \chapter{Organisation et répartition du travail}
 \par
 Notre groupe étant composé de 2 personnes, il était facile pour nous de
-communiquer sur l'avancé du projet, la façon d'aborder telle ou telle contrainte
-technique ou fonctionnelle ou tout simplement faire le point.
+communiquer sur l'avancé du projet, la façon d'aborder telle où telle contrainte
+technique où fonctionnelle ou tout simplement faire le point.
 \par
 Dans un premier temps et après nous être approprié \textit{Smallworld}, nous
 avons réaliser les spécifications UML ensemble afin de partir sur la même base
@@ -88,53 +78,92 @@ versionnage. Nous avons également profiter des fonctionnalités de \textbf{Git}
 pour effectuer un suivi efficace des fonctions à modifier où terminer.
 \par
 La répartition du travail s'est globalement fait ainsi, sachant que chacun
-n'hésitait pas à intervenir dans les parties de l'autre si besoin était :
+n'hésitait pas à intervenir dans les parties de l'autre si besoin était et qu'elle n'est pas définitive :
 \begin{itemize}
-    \item Florent : %TODO à compléter
-    \item Antonin : %TODO à compléter
+    \item Florent : Modèle, Contrôleur, Rapport
+    \item Antonin : Vue, Rapport
 \end{itemize}
-
 \newpage
 \chapter{Architecture du projet}
-\section{Premiere approche (Cas d'utilisation)}
-
-
-\section{Le modele}
-
-
+\section{Première approche (Cas d'utilisation)}
+Lorsque l'utilisateur lance le jeu, un premier menu s'offre à lui. Il peut choisir entre lancer une nouvelle partie, charger une partie déjà existante, afficher les règles où quitter le jeu.
+\par Le seul cas qu'il est intéressant de détailler est celui d'une nouvelle partie. Après que le nombre de joueur ait été défini, les utilisateurs jouent chacun à tour de rôle. Ils ont alors le choix entre 4 actions :
+\begin{itemize}
+\item Acheter un peuple
+\item Passer en déclin
+\item Attaquer un terrain
+\item Se redéployer
+\end{itemize}
+L'ordre et les différentes interactions entre ces actions sont détaillés dans le diagramme de séquence.
+\section{Le modèle}
+\par
+C'est là le cœur du programme. Le modèle est une classe qui regroupe toutes les
+classes du jeu en lui même, c'est à dire la carte, les jetons, les joueurs où
+toute autre classe utile à la simulation du jeu par le programme.  En revanche, il ne s'agit
+nullement de l'affichage, puisque cette tâche est laissée à la
+partie Interface Utilisateur, la Vue.
+\par
+Cette partie est la seule pour laquelle nous avons réalisé un diagramme de
+classe, étant donné qu'elle représente une grosse partie du projet, et que
+beaucoup de classes entrent en jeu. Afin de mieux le structurer et de
+savoir toujours dans quelle direction partir, le diagramme UML se trouvant en
+Annexe 3 a été réalisé. Cela a permis d'avoiruimmédiatement un aperçu de
+l'implémentation globale, et de se mettre d'accord sur la conception du projet.
 \section{L'interface (la Vue)}
-
-
-\section{Le deroulement d'une phase de jeu (Sequence)}
-
-
+Lors d'un tour de jeu, le joueur doit pouvoir effectuer les actions qu'il désire. En même temps il est nécessaire qu'il ait accès à toutes les informations utiles.
+\par
+L'interface se divise en 4 parties distinctes :
+\begin{itemize}
+\item En haut, un récapitulatif des informations de base des joueurs adversaires : pseudo, peuple et pouvoir actif, icône d'avatar etc.
+\item À droite, la liste des combinaisons peuple-pouvoir avec le nombre de pièces d'or correspondantes qu'il est possible de choisir.
+\item Au centre, le plateau de jeu avec les territoires, le peuple par territoire, les attributs spéciaux etc.
+\item En bas, les informations relatives au joueur actif, ainsi que les boutons d'action
+\end{itemize}
+Elle est cependant susceptible d'évoluer lors de l'implémentation.
+\section{Le déroulement d'une phase de jeu (Séquence)}
+\par
+Cette partie est très importante, puisqu'il s'agit en somme des règles du jeu.
+Étant donné que le programme est évènementiel, il suffit de savoir
+quelle action peut être faite à quel moment, et cela se résume dans le
+diagramme de séquence que nous avons fait, qui se trouve en Annexe 2.
+\par
+Ce diagramme s'étend sur la séquence de jeu d'un joueur, ce qui ne
+représente pas la séquence complète du programme, mais simplement la partie
+essentielle de celle-ci. On omet donc les étapes de fin de tour, ainsi que celles
+de l'initialisation et de la fin du jeu, qui ne sont pas \"essentielles\" au déroulement
+d'une partie.
 \newpage
-\chapter{Implementation}
-
-
+\chapter{Implémentation}
+Étant donné que l'implémentation n'a pas été complétement terminée, nous la détaillerons dans la version finale du rapport.
 \newpage
 \chapter{Annexes}
-\section{Diagramme de cas d'utilisation}
-\begin{figure}
+\section{Diagramme des cas d'utilisation}
+\begin{figure}[H]
     \begin{center}
-        \includegraphics[width=\textwidth]{use_case.png}
+        \includegraphics[width=0.85\textwidth]{use_case.png}
         \caption{Diagramme des cas d'utilisation du \textit{Smallworld}}
     \end{center}
 \end{figure}
 \section{Diagramme de séquence}
-\begin{figure}
+\begin{figure}[H]
     \begin{center}
-        \includegraphics[width=\textwidth]{sequence.png}
+        \includegraphics[width=0.85\textwidth]{sequence.png}
         \caption{Diagramme de séquence d'un tour de jeu}
     \end{center}
 \end{figure}
 \section{Diagramme de classes}
-\begin{figure}
+\begin{figure}[H]
     \begin{center}
-        \includegraphics[width=\textheight,angle=90]{classe.png}
+        \includegraphics[width=0.85\textheight,angle=90]{classe.png}
         \caption{Diagramme de classe du modèle}
     \end{center}
 \end{figure}
-
+\section{Interface}
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=0.85\textheight,angle=90]{plateau.jpg}
+        \caption{Maquette de l'interface lors d'un tour de jeu}
+   \end{center}
+\end{figure}
 \end{document}
 
