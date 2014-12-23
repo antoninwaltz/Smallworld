@@ -7,11 +7,17 @@ public class Case {
 	private int _id;
 	private HashMap<Integer,Case> _neighbours;
 	private Player _owner;
-	private CaseType _type;
+	private CaseType _type; 
+	private HashMap<Integer,Token> _tokens;
+	private int _tokenNb;
+
 	
-	public Case(int id) {
+	public Case(int id, CaseType t) {
 		_id = id;
+		_type = t;
 		this._neighbours = new HashMap<>();
+		this._tokens = new HashMap<>();
+		
 	}
 	
 	/* === START (GET/SET)ERS === */
@@ -24,25 +30,27 @@ public class Case {
 		return _neighbours;
 	}
 
-	public void setNeighbours(HashMap<Integer, Case> _neighbours) {
-		this._neighbours = _neighbours;
+	public void setNeighbours(HashMap<Integer, Case> neighbours) {
+		this._neighbours = neighbours;
 	}
 
 	public Player getOwner() {
 		return _owner;
 	}
 
-	public void setOwner(Player _owner) {
-		this._owner = _owner;
+	public void setOwner(Player owner) {
+		this._owner = owner;
 	}
 
 	public CaseType getType() {
 		return _type;
 	}
 
-	public void setType(CaseType _type) {
-		this._type = _type;
+	public void setType(CaseType type) {
+		this._type = type;
 	}
 	/* === END (GET/SET)ERS === */
-
+	public void addToken(Token t) {
+		_tokens.put(t.getId(), t);
+	}
 }
