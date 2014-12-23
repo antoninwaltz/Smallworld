@@ -1,7 +1,6 @@
 package model;
 
 import java.util.HashMap;
-import java.util.Stack;
 
 import modelExceptions.TooFewToken;
 import modelExceptions.TooPoor;
@@ -80,7 +79,7 @@ public class Player {
 		this._money -= q;
 	}
 
-	public void attackCase(Case c) {
+	public void attackCase(Case c) throws TooFewToken {
 		// TODO
 	}
 }

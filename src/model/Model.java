@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-import modelExceptions.ExistingPlayer;
 
 /**
  * <b>The Model class</b>
