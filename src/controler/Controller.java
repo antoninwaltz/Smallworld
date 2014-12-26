@@ -1,7 +1,12 @@
 package controler;
 
+import java.util.Random;
+
 import view.View;
+import model.Case;
 import model.Model;
+import modelExceptions.TooFewToken;
+import modelExceptions.Unreachable;
 
 /**
  * <b>The Controller class</b>
@@ -47,28 +52,45 @@ public class Controller {
 	 */
 	public void play() {
 		m.newPlayer("Skia");
-		m.newPlayer("Troll");
-		m.newPlayer("Blah");
-		m.initMap();
-		m.printAvailaibleFolk();
-		m.selectPlayerFolk(5);
-		System.out.println(m.getCurrentPlayer());
-		m.nextPlayer();
-		m.selectPlayerFolk(2);
-		System.out.println(m.getCurrentPlayer());
-		m.nextPlayer();
-		m.selectPlayerFolk(3);
-		System.out.println(m.getCurrentPlayer());
-		m.nextPlayer();
-		m.printAvailaibleFolk();
+		m.newPlayer("Gobelin");
+		m.initGame();
 
+		int i = 0;
 		while (true) {
-			break;
-			/*
-			 * e = view.getEvent()
-			 * 
-			 * switch (e) { }
-			 */
+			if (i > 3)
+				break;
+			else
+				i++;
+
+			System.out.println("\nActive player: " + m.getCurrentPlayer());
+			if (!m.hasActivePlayerAnActiveFolk()) {
+				m.selectActivePlayerFolk((int) (Math.random() * 10) % 6);
+			} else {
+				while (true) {
+					Case r = m.getMap().getCase(0);
+					while (!m.getCurrentPlayer().canAttack(r)) {
+						r = m.getMap().getCase((r.getId() + 1));
+					}
+					System.out.println(m.getCurrentPlayer().getName()
+							+ " attacks case " + r.getId() + " that contains " + 
+							r.getTokenNb() + " tokens");
+					try {
+						m.attackCase(r);
+					} catch (TooFewToken e) {
+						System.out.println("FAIL - TooFewToken");
+						e.printStackTrace();
+						break;
+					} catch (Unreachable e) {
+						System.out.println("FAIL - Unreachable");
+						e.printStackTrace();
+					}
+					if(m.getCurrentPlayer().getNbFreeToken() == 0)
+						break;
+				}
+				System.out.println(m.getCurrentPlayer());
+			}
+			m.nextPlayer();
 		}
+		m.printAvailaibleFolk();
 	}
 }

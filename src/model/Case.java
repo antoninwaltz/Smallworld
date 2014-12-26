@@ -11,7 +11,6 @@ public class Case {
 	private HashMap<Integer,Token> _tokens;
 	private int _tokenNb;
 
-	
 	public Case(int id, CaseType t) {
 		_id = id;
 		_type = t;
@@ -49,8 +48,29 @@ public class Case {
 	public void setType(CaseType type) {
 		this._type = type;
 	}
+	
+	public int getTokenNb() {
+		return _tokenNb;
+	}
+	
 	/* === END (GET/SET)ERS === */
 	public void addToken(Token t) {
 		_tokens.put(t.getId(), t);
+		_tokenNb++;
 	}
+	
+	public boolean isOnBorder() {
+		for(Case c : _neighbours.values()) {
+			if(c._id == 4000)
+				return true;
+		}
+		return false;
+	}
+
+	public void flushToken() {
+		_tokens.clear();
+		_tokenNb = 0;
+	}
+
+	
 }

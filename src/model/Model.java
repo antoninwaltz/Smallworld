@@ -1,8 +1,10 @@
 package model;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
+
+import modelExceptions.TooFewToken;
+import modelExceptions.Unreachable;
 
 
 /**
@@ -15,11 +17,11 @@ import java.util.LinkedList;
 public class Model {
 	private Map _map;
 	private ArrayList<Player> _players;
-	private int _activePlayer;
+	private int _playerIndex;
+	private Player _activePlayer;
 	private ArrayList<Folk> _folkQueue;
 	private ArrayList<Power> _powerQueue;
 	private LinkedList<Folk> _availableFolk;
-	private int[] _folkMoney;
 
 	/**
 	 * <b>Constructor of the model</b> It only build the attributes
@@ -30,7 +32,6 @@ public class Model {
 		this._folkQueue = new ArrayList<>();
 		this._powerQueue = new ArrayList<>();
 		this._availableFolk = new LinkedList<>();
-		this._folkMoney = new int[6];
 		this.initFolk();
 		this.initPower();
 		this.initAvailableFolk();
@@ -41,9 +42,14 @@ public class Model {
 	}
 
 	public Player getCurrentPlayer() {
-		return _players.get(_activePlayer);
+		return _activePlayer;
 	}
 
+	public void initGame() {
+		_activePlayer = _players.get(0);
+		initMap();
+	}
+	
 	public void initFolk() {
 		System.out.print("Initializing folks... ");
 		_folkQueue.add(new Folk("Elves", 5));
@@ -101,20 +107,39 @@ public class Model {
 		_players.add(new Player(name));
 		System.out.println("OK");
 	}
+	
+	public boolean hasActivePlayerAnActiveFolk() {
+		return _activePlayer.getCurrentFolk() != null;
+	}
 
-	public void selectPlayerFolk(int nb) {
+	public void selectActivePlayerFolk(int nb) {
 		for (int i = 0; i < nb; i++)
 			_availableFolk.get(i).incValue();
 		Folk f = _availableFolk.remove(nb);
 		Folk n = _folkQueue.remove(0);
 		n.setPower(_powerQueue.remove(0));
 		_availableFolk.addLast(n);
-		_players.get(_activePlayer).selectFolk(f, nb);
+		_activePlayer.selectFolk(f, nb);
 	}
 
 	public void nextPlayer() {
-		_activePlayer++;
-		_activePlayer %= _players.size();
+		_playerIndex++;
+		_playerIndex %= _players.size();
+		_activePlayer = _players.get(_playerIndex);
 	}
 
+	public void attackCase(Case target) throws TooFewToken, Unreachable {
+		if(!_activePlayer.canReach(target)) throw new Unreachable(target.getId());
+		if(_activePlayer.getNbFreeToken() <= target.getTokenNb()) throw new TooFewToken();
+		int tNb = target.getTokenNb();
+		target.flushToken();
+		for(int i=0;i<=tNb;i++){ // Set enough token on the case to make it colonized
+			Token t = _activePlayer.getOneFreeToken();
+			t.setCurrentCase(target);
+			target.addToken(t);
+		}
+		_activePlayer.addControledCase(target);
+		System.out.println("SUCCESS: target " + target.getId() + 
+				" captured! Remaining tokens: " + _activePlayer.getNbFreeToken());
+	}
 }

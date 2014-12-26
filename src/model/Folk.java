@@ -41,5 +41,9 @@ public class Folk {
 		this._value++;
 	}
 
+	public void toDecline() {
+		this._inDecline = true;
+	}
+
 	
 }

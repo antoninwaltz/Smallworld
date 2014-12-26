@@ -140,4 +140,8 @@ public class Map {
 		this._map.get(a).getNeighbours().put(b, this._map.get(b));
 		this._map.get(b).getNeighbours().put(a, this._map.get(a));
 	}
+	
+	public Case getCase(int caseId) {
+		return this._map.get(caseId);
+	}
 }
