@@ -12,7 +12,7 @@ public class Folk {
 	
 	public Folk (String name, int tNb) {
 		this._name = name;
-		this._token = new HashMap<>();
+		this._token = new HashMap<Integer, FolkToken>();
 		this._initialTokenNb = tNb;
 	}
 

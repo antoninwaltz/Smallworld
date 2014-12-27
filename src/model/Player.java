@@ -1,11 +1,8 @@
 package model;
 
-import java.security.acl.Owner;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 
-import modelExceptions.TooFewToken;
 import modelExceptions.TooPoor;
 
 public class Player {
@@ -21,8 +18,8 @@ public class Player {
 		this._money = 5;
 		this._currentFolk = null;
 		this._decliningFolk = null;
-		this._ownedCases = new HashMap<>();
-		this._freeFolkTokens = new ArrayList<>();
+		this._ownedCases = new HashMap<Integer, Case>();
+		this._freeFolkTokens = new ArrayList<FolkToken>();
 	}
 
 	/* === START (GET/SET)ERS === */
@@ -68,7 +65,7 @@ public class Player {
 			earnGold(f.getValue());
 			payGold(cost);
 			_currentFolk = f;
-			this._freeFolkTokens = new ArrayList<>(this._currentFolk.getToken().values());
+			this._freeFolkTokens = new ArrayList<FolkToken>(this._currentFolk.getToken().values());
 		} catch (TooPoor e) {
 			System.out.println(e.getMessage());
 		}

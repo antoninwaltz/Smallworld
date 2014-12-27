@@ -14,8 +14,8 @@ public class Case {
 	public Case(int id, CaseType t) {
 		_id = id;
 		_type = t;
-		this._neighbours = new HashMap<>();
-		this._tokens = new HashMap<>();
+		this._neighbours = new HashMap<Integer, Case>();
+		this._tokens = new HashMap<Integer, Token>();
 		
 	}
 	

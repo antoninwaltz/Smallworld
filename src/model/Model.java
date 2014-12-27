@@ -28,10 +28,10 @@ public class Model {
 	 */
 	public Model() {
 		this._map = null;
-		this._players = new ArrayList<>();
-		this._folkQueue = new ArrayList<>();
-		this._powerQueue = new ArrayList<>();
-		this._availableFolk = new LinkedList<>();
+		this._players = new ArrayList<Player>();
+		this._folkQueue = new ArrayList<Folk>();
+		this._powerQueue = new ArrayList<Power>();
+		this._availableFolk = new LinkedList<Folk>();
 		this.initFolk();
 		this.initPower();
 		this.initAvailableFolk();
