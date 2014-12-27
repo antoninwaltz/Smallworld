@@ -28,6 +28,9 @@ public class View extends JFrame {
 	private Model m;
 	
 	private HomeView _HomeView;
+	private NbPlayersView _NbPlayersView;
+	private PseudoPlayersView _PseudoPlayersView;
+	private RulesView _RulesView;
 	
 	/**
 	 * <b>Constructor of the view</b>
@@ -40,6 +43,9 @@ public class View extends JFrame {
 		
 		//Views
 		_HomeView = new HomeView();
+		_NbPlayersView = new NbPlayersView();
+		_PseudoPlayersView = new PseudoPlayersView();
+		_RulesView = new RulesView();
 		
 		this.setContentPane(_HomeView);
 		
@@ -52,8 +58,24 @@ public class View extends JFrame {
 		
 	}
 	
+	public HomeView getHomeView() {
+		return _HomeView;
+	}
+	
+	public NbPlayersView getNbPlayersView() {
+		return _NbPlayersView;
+	}
+	
+	public PseudoPlayersView getPseudoPlayersView() {
+		return _PseudoPlayersView;
+	}
+	
+	public RulesView getRulesView() {
+		return _RulesView;
+	}
+	
 	static public Dimension getFrameSize() {
-		Dimension frameSize = new Dimension(800,600);
+		Dimension frameSize = new Dimension(1200,800);
 		return frameSize;
 	}
 }

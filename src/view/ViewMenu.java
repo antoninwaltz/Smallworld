@@ -26,6 +26,7 @@ public abstract class ViewMenu extends JLayeredPane {
 	final int frameHeight = View.getFrameSize().height;
 	
 	//background of the menu pages
+	/** TODO Vérifier les images */
 	private String titleImagePath = "images/title.png";
 	private String backgroundImagePath = "images/background.png";
 	private Image image,title;
@@ -57,7 +58,7 @@ public abstract class ViewMenu extends JLayeredPane {
 		
 		backButton = new JButton("BACK");
 		backButton.setSize(100,30);
-		backButton.setLocation(400, 400);
+		backButton.setLocation(1050, 700);
 		
 		this.add(backPanel,new Integer(0)); //le backPanel a un index de 0 pour etre en arriere plan de tous les autres objets qui auront un index de 1
 		this.add(backButton,new Integer(1));
