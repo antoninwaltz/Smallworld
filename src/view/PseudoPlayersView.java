@@ -14,108 +14,97 @@ import javax.swing.JTextField;
 
 public class PseudoPlayersView extends ViewMenu {
 	
-	JLabel player1Label;
-	JLabel player2Label;
-	JLabel player3Label;
-	JLabel player4Label;
-	JLabel player5Label;
-	
-	JTextField player1nameField;
-	JTextField player2nameField;
-	JTextField player3nameField;
-	JTextField player4nameField;
-	JTextField player5nameField;
-	
-	JButton okButton;
+	JLabel playerLabel[] = new JLabel[6];
+	JTextField playerTextField[] = new JTextField[6];
+	JButton okButton, addButton, removeButton;
 	
 	public PseudoPlayersView(){
 		
 		//Label
-		player1Label = new JLabel("Player 1, enter your name :");
-		player1Label.setSize(200, 30);
-		player1Label.setLocation(frameWidth/2-100,150);
-		
-		player2Label = new JLabel("Player 2, enter your name :");
-		player2Label.setSize(200, 30);
-		player2Label.setLocation(frameWidth/2-100,250);
-		
-		player3Label = new JLabel("Player 3, enter your name :");
-		player3Label.setSize(200, 30);
-		player3Label.setLocation(frameWidth/2-100,350);
-		
-		player4Label = new JLabel("Player 4, enter your name :");
-		player4Label.setSize(200, 30);
-		player4Label.setLocation(frameWidth/2-100,450);
-		
-		player5Label = new JLabel("Player 5, enter your name :");
-		player5Label.setSize(200, 30);
-		player5Label.setLocation(frameWidth/2-100,550);
+		for(int i = 0; i<6 ; i++){
+			JLabel temp = new JLabel("Player "+(i+1)+", enter your name :");
+			playerLabel[i] = temp;
+			playerLabel[i].setSize(200, 30);
+			playerLabel[i].setLocation(frameWidth/2-100,150+i*100);
+			
+			this.add(playerLabel[i],new Integer(1));
+		}
+		playerLabel[2].setVisible(false);
+		playerLabel[3].setVisible(false);
+		playerLabel[4].setVisible(false);
+		playerLabel[5].setVisible(false);	
 		
 		
 		//TextField
-		player1nameField = new JTextField();
-		player1nameField.setSize(200,30);
-		player1nameField.setLocation(frameWidth/2-100,200);
-		
-		player2nameField = new JTextField();
-		player2nameField.setSize(200,30);
-		player2nameField.setLocation(frameWidth/2-100,300);
-		
-		player3nameField = new JTextField();
-		player3nameField.setSize(200,30);
-		player3nameField.setLocation(frameWidth/2-100,400);
-		
-		player4nameField = new JTextField();
-		player4nameField.setSize(200,30);
-		player4nameField.setLocation(frameWidth/2-100,500);
-		
-		player5nameField = new JTextField();
-		player5nameField.setSize(200,30);
-		player5nameField.setLocation(frameWidth/2-100,600);
+		for(int i = 0; i<6 ; i++){
+			JTextField temp = new JTextField();
+			playerTextField[i] = temp;
+			playerTextField[i].setSize(200, 30);
+			playerTextField[i].setLocation(frameWidth/2-100,200+i*100);
+			this.add(playerTextField[i],new Integer(1));
+		}
+		playerTextField[2].setVisible(false);
+		playerTextField[3].setVisible(false);
+		playerTextField[4].setVisible(false);
+		playerTextField[5].setVisible(false);
 		
 		//OK Button
 		okButton = new JButton("OK");
 		okButton.setSize(200,30);
-		okButton.setLocation(frameWidth/2-100, 700);
-		
-		//Add
-		this.add(player1Label,new Integer(1));
-		this.add(player2Label,new Integer(1));
-		this.add(player3Label,new Integer(1));
-		this.add(player4Label,new Integer(1));
-		this.add(player5Label,new Integer(1));
-		
-		this.add(player1nameField,new Integer(1));
-		this.add(player2nameField,new Integer(1));
-		this.add(player3nameField,new Integer(1));
-		this.add(player4nameField,new Integer(1));
-		this.add(player5nameField,new Integer(1));
-		
+		okButton.setLocation(150, 700);
 		this.add(okButton,new Integer(1));
+		
+		//Add Button
+		addButton = new JButton("ADD PLAYER");
+		addButton.setSize(200,30);
+		addButton.setLocation(frameWidth/2-100, 800);
+		this.add(addButton,new Integer(1));
+		
+		//REMOVE Button
+		removeButton = new JButton("REMOVE PLAYER");
+		removeButton.setSize(200,30);
+		removeButton.setLocation(frameWidth/2-100, 850);
+		this.add(removeButton,new Integer(1));
+		
 	}
 	
-	public JTextField getPlayer1NameField() {
-		return player1nameField;
+	public void addPlayer(int c) {
+		if(c>1 && c<6){
+			playerTextField[c].setVisible(true); /** try catch ? */
+			playerLabel[c].setVisible(true);
+			
+		}
 	}
 	
-	public JTextField getPlayer2NameField() {
-		return player2nameField;
-	}
-	
-	public JTextField getPlayer3NameField() {
-		return player3nameField;
-	}
-	
-	public JTextField getPlayer4NameField() {
-		return player4nameField;
-	}
-	
-	public JTextField getPlayer5NameField() {
-		return player5nameField;
+	public void removePlayer(int c) {
+		if(c>1 && c<7){
+			playerTextField[c].setVisible(false); /** try catch ? */
+			playerLabel[c].setVisible(false);
+		
+		}
 	}
 	
 	public JButton getOkButton() {
 		return okButton;
 	}
+	
+	public JButton getAddButton() {
+		return addButton;
+	}
+	
+	public JButton getRemoveButton() {
+		return removeButton;
+	}
+	
+	public JTextField getPlayerTextField(int i) {
+		if(i>0 && i<=6){
+			return playerTextField[i-1];
+		}
+		else{
+			return playerTextField[0]; /** TODO try catch ? */
+		}
+	}
+	
+	
 
 }

@@ -6,8 +6,12 @@ import model.Model;
 import view.HomeView;
 
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 /**
  * <b>The View class</b>
@@ -20,17 +24,26 @@ import javax.swing.JFrame;
  * 
  * @author Skia
  */
-public class View extends JFrame {
+public class View extends JFrame implements ActionListener {
 	/**
 	 * The model attribute
 	 * @see Model
 	 */
 	private Model m;
 	
-	private HomeView _HomeView;
-	private NbPlayersView _NbPlayersView;
+	private HomeView _HomeView;;
 	private PseudoPlayersView _PseudoPlayersView;
 	private RulesView _RulesView;
+	
+	/**
+	 * Attributes for the buttons of the menus
+	 * 
+	 * @see View
+	 */
+	private JButton _backfromPseudoButton, _backfromRulesButton;
+	private JButton _newButton, _loadButton, _rulesButton, _exitButton, _addButton, _removeButton ;
+	private JButton _okButton;
+	
 	
 	/**
 	 * <b>Constructor of the view</b>
@@ -43,12 +56,52 @@ public class View extends JFrame {
 		
 		//Views
 		_HomeView = new HomeView();
-		_NbPlayersView = new NbPlayersView();
 		_PseudoPlayersView = new PseudoPlayersView();
 		_RulesView = new RulesView();
 		
+		//Page de départ
 		this.setContentPane(_HomeView);
 		
+		//Récupération des boutons de retour
+		_backfromPseudoButton = _PseudoPlayersView.getBackButton();
+		_backfromPseudoButton.addActionListener(this);
+		_backfromRulesButton = _RulesView.getBackButton();
+		_backfromRulesButton.addActionListener(this);
+		
+		//Récupération du bouton de nouvelle partie
+		_newButton = _HomeView.getNewButton();
+		_newButton.addActionListener(this);
+				
+		//Récupération du bouton de chargement d'une partie
+		_loadButton = _HomeView.getLoadButton();
+		_loadButton.addActionListener(this);
+				
+		//Récupération du bouton des règles
+		_rulesButton = _HomeView.getRulesButton();
+		_rulesButton.addActionListener(this);
+				
+		//Récupération du bouton exit
+		_exitButton = _HomeView.getExitButton();
+		_exitButton.addActionListener(this);
+		
+		//Récupération du bouton exit
+		_exitButton = _HomeView.getExitButton();
+		_exitButton.addActionListener(this);
+				
+		//Récupération du bouton OK dans le menu de creation des profils joueurs
+		_okButton = _PseudoPlayersView.getOkButton();
+		_okButton.addActionListener(this);
+		
+		//Récupération du bouton Add dans le menu de creation des profils joueurs
+		_addButton = _PseudoPlayersView.getAddButton();
+		_addButton.addActionListener(this);
+		
+		//Récupération du bouton Add dans le menu de creation des profils joueurs
+		_removeButton = _PseudoPlayersView.getRemoveButton();
+		_removeButton.addActionListener(this);
+		
+		
+		//Paramètre de base
 		this.setTitle("Smallworld UTBM");
 		this.setSize((int)View.getFrameSize().getWidth(),(int)View.getFrameSize().getHeight());
 		this.setLocationRelativeTo(null);
@@ -62,10 +115,6 @@ public class View extends JFrame {
 		return _HomeView;
 	}
 	
-	public NbPlayersView getNbPlayersView() {
-		return _NbPlayersView;
-	}
-	
 	public PseudoPlayersView getPseudoPlayersView() {
 		return _PseudoPlayersView;
 	}
@@ -75,7 +124,28 @@ public class View extends JFrame {
 	}
 	
 	static public Dimension getFrameSize() {
-		Dimension frameSize = new Dimension(1200,800);
+		Dimension frameSize = new Dimension(1400,900);
 		return frameSize;
 	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+				
+		//Si on appuie sur le bouton des regles, on ouvre le menu des regles
+		if (e.getSource().equals(_rulesButton)) {
+			this.setContentPane(_RulesView);
+			_RulesView.requestFocus();
+			this.setVisible(true);
+		}
+				
+		//Si on appuie sur le bouton exit, on vérifie que l'utilisateur veut bien quitter la partie, puis on quitte ou non
+		if (e.getSource().equals(_exitButton)) {
+			int option = javax.swing.JOptionPane.showConfirmDialog(null, "Are you sure ?", "Exit", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+			if(option == JOptionPane.OK_OPTION) {
+				System.exit(0);
+			}
+		}
+	}
 }
+	
+
