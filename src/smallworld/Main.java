@@ -1,6 +1,6 @@
 package smallworld;
 
-import controler.Controller;
+import controller.Controller;
 import view.View;
 import model.Model;
 

@@ -1,5 +1,6 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 
@@ -8,14 +9,14 @@ public class Case {
 	private HashMap<Integer,Case> _neighbours;
 	private Player _owner;
 	private CaseType _type; 
-	private HashMap<Integer,Token> _tokens;
+	private ArrayList<Token> _tokens;
 	private int _tokenNb;
 
 	public Case(int id, CaseType t) {
 		_id = id;
 		_type = t;
 		this._neighbours = new HashMap<Integer, Case>();
-		this._tokens = new HashMap<Integer, Token>();
+		this._tokens = new ArrayList<Token>();
 		
 	}
 	
@@ -55,8 +56,12 @@ public class Case {
 	
 	/* === END (GET/SET)ERS === */
 	public void addToken(Token t) {
-		_tokens.put(t.getId(), t);
+		_tokens.add(t);
 		_tokenNb++;
+	}
+	
+	public Token remToken() {
+		return _tokens.remove(0);
 	}
 	
 	public boolean isOnBorder() {

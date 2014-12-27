@@ -44,6 +44,10 @@ public class Model {
 	public Player getCurrentPlayer() {
 		return _activePlayer;
 	}
+	
+	public LinkedList<Folk> getAvailableFolks() {
+		return _availableFolk;
+	}
 
 	public void initGame() {
 		_activePlayer = _players.get(0);
@@ -126,20 +130,5 @@ public class Model {
 		_playerIndex++;
 		_playerIndex %= _players.size();
 		_activePlayer = _players.get(_playerIndex);
-	}
-
-	public void attackCase(Case target) throws TooFewToken, Unreachable {
-		if(!_activePlayer.canReach(target)) throw new Unreachable(target.getId());
-		if(_activePlayer.getNbFreeToken() <= target.getTokenNb()) throw new TooFewToken();
-		int tNb = target.getTokenNb();
-		target.flushToken();
-		for(int i=0;i<=tNb;i++){ // Set enough token on the case to make it colonized
-			Token t = _activePlayer.getOneFreeToken();
-			t.setCurrentCase(target);
-			target.addToken(t);
-		}
-		_activePlayer.addControledCase(target);
-		System.out.println("SUCCESS: target " + target.getId() + 
-				" captured! Remaining tokens: " + _activePlayer.getNbFreeToken());
 	}
 }

@@ -3,7 +3,9 @@ package model;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import modelExceptions.TooFewToken;
 import modelExceptions.TooPoor;
+import modelExceptions.Unreachable;
 
 public class Player {
 	private String _name;
@@ -11,6 +13,7 @@ public class Player {
 	private Folk _currentFolk;
 	private Folk _decliningFolk;
 	private HashMap<Integer, Case> _ownedCases;
+	private HashMap<Integer, Case> _declinedCases;
 	private ArrayList<FolkToken> _freeFolkTokens;
 
 	public Player(String name) {
@@ -70,11 +73,37 @@ public class Player {
 			System.out.println(e.getMessage());
 		}
 	}
+	
+	public void attackCase(Case target) throws TooFewToken, Unreachable {
+		if(!canReach(target)) throw new Unreachable(target.getId());
+		if(getNbFreeToken() <= target.getTokenNb()) throw new TooFewToken();
+		int tNb = target.getTokenNb();
+		target.flushToken();
+		for(int i=0;i<=tNb;i++){ // Set enough token on the case to make it colonized
+			Token t = getOneFreeToken();
+			t.setCurrentCase(target);
+			target.addToken(t);
+		}
+		addControledCase(target);
+		System.out.println("SUCCESS: target " + target.getId() + 
+				" captured! Remaining tokens: " + getNbFreeToken());
+	}
 
 	public void folkToDecline() {
 		this._currentFolk.toDecline();
 		this._decliningFolk = _currentFolk;
 		_currentFolk = null;
+		for(Case c : _declinedCases.values()) { // flush old declining folk
+			c.flushToken();
+		}
+		for(Case c : _ownedCases.values()) { // only one declining folk token remains
+			Token t = c.remToken();
+			t.toDecline();
+			c.flushToken();
+			c.addToken(t);
+		}
+		_declinedCases = _ownedCases;
+		_ownedCases = null;
 	}
 
 	public void earnGold(int q) {

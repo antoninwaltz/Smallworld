@@ -1,19 +1,10 @@
-package controler;
+package controller;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.JButton;
-import javax.swing.JOptionPane;
-
-import view.HomeView;
-import view.PseudoPlayersView;
-import view.RulesView;
-import view.View;
 import model.Case;
 import model.Model;
 import modelExceptions.TooFewToken;
 import modelExceptions.Unreachable;
+import view.View;
 
 /**
  * <b>The Controller class</b>
@@ -61,23 +52,11 @@ public class Controller {
 		m.newPlayer("Skia");
 		m.newPlayer("Gobelin");
 		m.initGame();
-		m.initMap();
 		m.printAvailaibleFolk();
-		m.selectActivePlayerFolk(5);
-		System.out.println(m.getCurrentPlayer());
-		m.nextPlayer();
-		m.selectActivePlayerFolk(2);
-		System.out.println(m.getCurrentPlayer());
-		m.nextPlayer();
-		m.selectActivePlayerFolk(3);
-		System.out.println(m.getCurrentPlayer());
-		m.nextPlayer();
-		m.printAvailaibleFolk();
-		
 		
 		int i = 0;
 		while (true) {
-			if (i > 3)
+			if (i > 4)
 				break;
 			else
 				i++;
@@ -88,14 +67,14 @@ public class Controller {
 			} else {
 				while (true) {
 					Case r = m.getMap().getCase(0);
-					while (!m.getCurrentPlayer().canAttack(r)) {
+					while (r.getId() < 29 && !m.getCurrentPlayer().canAttack(r)) {
 						r = m.getMap().getCase((r.getId() + 1));
 					}
 					System.out.println(m.getCurrentPlayer().getName()
 							+ " attacks case " + r.getId() + " that contains " + 
 							r.getTokenNb() + " tokens");
 					try {
-						m.attackCase(r);
+						m.getCurrentPlayer().attackCase(r);
 					} catch (TooFewToken e) {
 						System.out.println("FAIL - TooFewToken");
 						e.printStackTrace();
@@ -107,8 +86,8 @@ public class Controller {
 					if(m.getCurrentPlayer().getNbFreeToken() == 0)
 						break;
 				}
-				System.out.println(m.getCurrentPlayer());
 			}
+			System.out.println("End of turn: "+m.getCurrentPlayer());
 			m.nextPlayer();
 		}
 		m.printAvailaibleFolk();

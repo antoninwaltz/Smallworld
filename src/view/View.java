@@ -61,6 +61,7 @@ public class View extends JFrame implements ActionListener {
 		
 		//Page de départ
 		this.setContentPane(_HomeView);
+		//this.setContentPane(_PseudoPlayersView);
 		
 		//Récupération des boutons de retour
 		_backfromPseudoButton = _PseudoPlayersView.getBackButton();
@@ -107,7 +108,7 @@ public class View extends JFrame implements ActionListener {
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setResizable(false);
-		this.setVisible(true);
+		this.setVisible(false);
 		
 	}
 	
@@ -124,7 +125,7 @@ public class View extends JFrame implements ActionListener {
 	}
 	
 	static public Dimension getFrameSize() {
-		Dimension frameSize = new Dimension(1400,900);
+		Dimension frameSize = new Dimension(900,600);
 		return frameSize;
 	}
 
