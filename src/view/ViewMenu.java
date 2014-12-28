@@ -55,7 +55,7 @@ public abstract class ViewMenu extends JLayeredPane {
 		backPanel.setSize(new Dimension(frameWidth, frameHeight));
 		setFocusable(true);
 		setDoubleBuffered(true);
-		
+
 		backButton = new JButton("RETURN HOME");
 		backButton.setSize(150,30);
 		backButton.setLocation(700, 500);
@@ -66,7 +66,7 @@ public abstract class ViewMenu extends JLayeredPane {
 		this.setVisible(true);
 		
 	}
-		
+
 	public JButton getBackButton(){
 		
 		return backButton;

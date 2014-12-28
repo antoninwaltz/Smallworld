@@ -74,6 +74,7 @@ public class View extends JFrame implements ActionListener {
 		_RulesView = new RulesView();
 		
 		//Page de départ
+		_HomeView.refresh(m.getPlayers());
 		this.setContentPane(_HomeView);
 		//this.setContentPane(_PseudoPlayersView);
 		
@@ -150,7 +151,7 @@ public class View extends JFrame implements ActionListener {
 			_RulesView.requestFocus();
 			this.setVisible(true);
 		}
-				
+
 		//Si on appuie sur le bouton exit, on vérifie que l'utilisateur veut bien quitter la partie, puis on quitte ou non
 		if (e.getSource().equals(_exitButton)) {
 			int option = javax.swing.JOptionPane.showConfirmDialog(null, "Are you sure ?", "Exit", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
@@ -158,15 +159,16 @@ public class View extends JFrame implements ActionListener {
 				System.exit(0);
 			}
 		}
-		
+
 		//Si on appuie sur le bouton return home en étant sur la page des regles,
 		//On retourne sur la page d'accueil
 		if (e.getSource().equals(_backfromRulesButton)) {
+			_HomeView.refresh(m.getPlayers());
 			this.setContentPane(_HomeView);
 			_HomeView.requestFocus();
 			this.setVisible(true);
 		}
-		
+
 		//Si on appuie sur le bouton new game
 		//Pour l'instant on ajoute juste un event dans la stack
 		if (e.getSource().equals(_newButton)) {
@@ -178,6 +180,7 @@ public class View extends JFrame implements ActionListener {
 			System.out.println(this._stack.getItemOfStack(0).getEvent());
 			
 		}
+
 	}
 }
 	
