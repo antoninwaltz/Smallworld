@@ -108,7 +108,7 @@ public class View extends JFrame implements ActionListener {
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setResizable(false);
-		this.setVisible(false);
+		this.setVisible(true);
 		
 	}
 	

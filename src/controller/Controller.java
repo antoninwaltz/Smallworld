@@ -56,7 +56,7 @@ public class Controller {
 		
 		int i = 0;
 		while (true) {
-			if (i > 4)
+			if (i > 7)
 				break;
 			else
 				i++;
@@ -64,7 +64,7 @@ public class Controller {
 			System.out.println("\nActive player: " + m.getCurrentPlayer());
 			if (!m.hasActivePlayerAnActiveFolk()) {
 				m.selectActivePlayerFolk((int) (Math.random() * 10) % 6);
-			} else {
+			} else if (m.getCurrentPlayer().getNbFreeToken() > 0){
 				while (true) {
 					Case r = m.getMap().getCase(0);
 					while (r.getId() < 29 && !m.getCurrentPlayer().canAttack(r)) {
@@ -86,7 +86,10 @@ public class Controller {
 					if(m.getCurrentPlayer().getNbFreeToken() == 0)
 						break;
 				}
+			} else {
+				m.getCurrentPlayer().folkToDecline();
 			}
+			m.getCurrentPlayer().harvestMoney();
 			System.out.println("End of turn: "+m.getCurrentPlayer());
 			m.nextPlayer();
 		}

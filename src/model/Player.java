@@ -22,6 +22,7 @@ public class Player {
 		this._currentFolk = null;
 		this._decliningFolk = null;
 		this._ownedCases = new HashMap<Integer, Case>();
+		this._declinedCases = new HashMap<Integer, Case>();
 		this._freeFolkTokens = new ArrayList<FolkToken>();
 	}
 
@@ -29,7 +30,8 @@ public class Player {
 
 	@Override
 	public String toString() {
-		return "Player " + _name + ", " + _currentFolk + ", " + getNbFreeToken();
+		return "Player " + _name + ", Folk: " + _currentFolk + ", FreeTokens: "
+				+ getNbFreeToken() + ", Money: " + _money;
 	}
 
 	public Folk getCurrentFolk() {
@@ -52,58 +54,82 @@ public class Player {
 	public int getMoney() {
 		return _money;
 	}
-	
+
 	public int getNbFreeToken() {
 		return _freeFolkTokens.size();
 	}
-	
+
 	public Token getOneFreeToken() {
 		return _freeFolkTokens.remove(0);
 	}
-	
+
 	/* === END (GET/SET)ERS === */
 
 	public void selectFolk(Folk f, int cost) {
 		try {
 			earnGold(f.getValue());
 			payGold(cost);
+			f.generateFolkTokens();
 			_currentFolk = f;
-			this._freeFolkTokens = new ArrayList<FolkToken>(this._currentFolk.getToken().values());
+			this._freeFolkTokens = new ArrayList<FolkToken>(
+					this._currentFolk.getToken());
 		} catch (TooPoor e) {
 			System.out.println(e.getMessage());
 		}
 	}
-	
+
 	public void attackCase(Case target) throws TooFewToken, Unreachable {
-		if(!canReach(target)) throw new Unreachable(target.getId());
-		if(getNbFreeToken() <= target.getTokenNb()) throw new TooFewToken();
+		if (!canReach(target))
+			throw new Unreachable(target.getId());
+		if (getNbFreeToken() <= target.getTokenNb())
+			throw new TooFewToken();
 		int tNb = target.getTokenNb();
 		target.flushToken();
-		for(int i=0;i<=tNb;i++){ // Set enough token on the case to make it colonized
+		for (int i = 0; i <= tNb; i++) { // Set enough token on the case to make
+											// it colonized
 			Token t = getOneFreeToken();
 			t.setCurrentCase(target);
 			target.addToken(t);
 		}
 		addControledCase(target);
-		System.out.println("SUCCESS: target " + target.getId() + 
-				" captured! Remaining tokens: " + getNbFreeToken());
+		System.out.println("SUCCESS: target " + target.getId()
+				+ " captured! Remaining tokens: " + getNbFreeToken());
+	}
+
+	public void freeTroops() {
+		for (Case c : _ownedCases.values()) {
+			FolkToken t = c.remOneFolkToken();
+			while (t != null) {
+				_freeFolkTokens.add(t);
+				t = c.remOneFolkToken();
+			}
+		}
+	}
+
+	public void harvestMoney() {
+		int count = _ownedCases.size()+_declinedCases.size();
+		// TODO implement special rules
+		earnGold(count);
 	}
 
 	public void folkToDecline() {
+		System.out.print(_currentFolk + " getting into decline...");
 		this._currentFolk.toDecline();
 		this._decliningFolk = _currentFolk;
 		_currentFolk = null;
-		for(Case c : _declinedCases.values()) { // flush old declining folk
+		for (Case c : _declinedCases.values()) { // flush old declining folk
 			c.flushToken();
 		}
-		for(Case c : _ownedCases.values()) { // only one declining folk token remains
-			Token t = c.remToken();
+		for (Case c : _ownedCases.values()) { // only one declining folk token
+												// remains
+			FolkToken t = c.remOneFolkToken();
 			t.toDecline();
 			c.flushToken();
 			c.addToken(t);
 		}
 		_declinedCases = _ownedCases;
-		_ownedCases = null;
+		_ownedCases = new HashMap<Integer, Case>();
+		System.out.println("OK");
 	}
 
 	public void earnGold(int q) {
@@ -117,25 +143,25 @@ public class Player {
 	}
 
 	public boolean canReach(Case target) {
-		if(_ownedCases.isEmpty() && target.isOnBorder())
+		if (_ownedCases.isEmpty() && target.isOnBorder())
 			return true;
-		for(Case c : _ownedCases.values()) {
-			if(c.getNeighbours().containsValue(target))
+		for (Case c : _ownedCases.values()) {
+			if (c.getNeighbours().containsValue(target))
 				return true;
 		}
 		return false;
 	}
-	
+
 	public boolean canAttack(Case target) {
-		if(_ownedCases.containsKey(target.getId()))
+		if (_ownedCases.containsKey(target.getId())) // don't attack yourself!
 			return false;
-		if(canReach(target) && target.getTokenNb()<getNbFreeToken())
+		if (canReach(target) && target.getTokenNb() < getNbFreeToken())
 			return true;
 		return false;
 	}
 
 	public void addControledCase(Case c) {
-		if(c.getOwner() != null) {
+		if (c.getOwner() != null) { // delete last owner's ownership
 			c.getOwner().delControledCase(c);
 		}
 		c.setOwner(this);

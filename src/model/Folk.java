@@ -1,18 +1,18 @@
 package model;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 
 public class Folk {
 	private boolean _inDecline;
 	private int _value;
 	private int _initialTokenNb;
-	private HashMap<Integer, FolkToken> _token;
+	private ArrayList<FolkToken> _token;
 	private Power _power;
 	private String _name;
 	
 	public Folk (String name, int tNb) {
 		this._name = name;
-		this._token = new HashMap<Integer, FolkToken>();
+		this._token = new ArrayList<FolkToken>();
 		this._initialTokenNb = tNb;
 	}
 
@@ -21,16 +21,13 @@ public class Folk {
 		return _name + "-" + _power;
 	}
 
-	public HashMap<Integer, FolkToken> getToken() {
+	public ArrayList<FolkToken> getToken() {
 		return _token;
 	}
 	
 	public void setPower(Power p) {
 		this._power = p;
 		this._initialTokenNb += p.getInitialToken();
-		for(int i=0;i<_initialTokenNb;i++) {
-			_token.put(i, new FolkToken(i, _name));
-		}
 	}
 	
 	public int getValue() {
@@ -43,6 +40,12 @@ public class Folk {
 
 	public void toDecline() {
 		this._inDecline = true;
+	}
+
+	public void generateFolkTokens() {
+		for(int i=0;i<_initialTokenNb;i++) {
+			_token.add(new FolkToken(i, _name+i));
+		}
 	}
 
 	

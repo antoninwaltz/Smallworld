@@ -3,9 +3,6 @@ package model;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
-import modelExceptions.TooFewToken;
-import modelExceptions.Unreachable;
-
 
 /**
  * <b>The Model class</b>
@@ -65,6 +62,7 @@ public class Model {
 		_folkQueue.add(new Folk("Trolls", 5));
 		_folkQueue.add(new Folk("Amazones", 5));
 		_folkQueue.add(new Folk("Wizards", 5));
+		_folkQueue.add(new Folk("Cagneux", 4));
 		System.out.println("OK");
 	}
 
@@ -79,6 +77,7 @@ public class Model {
 		_powerQueue.add(new Power(PowerType.FESTIFS, 3));
 		_powerQueue.add(new Power(PowerType.NIAIS, 4));
 		_powerQueue.add(new Power(PowerType.STRESSES, 5));
+		_powerQueue.add(new Power(PowerType.BOSSEURS, 5));
 		System.out.println("OK");
 	}
 

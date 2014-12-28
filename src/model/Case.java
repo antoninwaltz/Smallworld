@@ -60,8 +60,12 @@ public class Case {
 		_tokenNb++;
 	}
 	
-	public Token remToken() {
-		return _tokens.remove(0);
+	public FolkToken remOneFolkToken() {
+		for(int i=0;i<_tokenNb;i++){
+			if(_tokens.get(i) instanceof FolkToken)
+				return (FolkToken) _tokens.remove(i);
+		}
+		return null;
 	}
 	
 	public boolean isOnBorder() {

@@ -9,5 +9,6 @@ public enum PowerType {
 	TROP_NULS,
 	NIAIS,
 	CHELOUS,
-	STRESSES
+	STRESSES,
+	BOSSEURS
 }
