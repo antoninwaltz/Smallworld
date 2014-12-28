@@ -64,8 +64,6 @@ public class View extends JFrame implements ActionListener {
 		//this.setContentPane(_PseudoPlayersView);
 		
 		//Récupération des boutons de retour
-		_backfromPseudoButton = _PseudoPlayersView.getBackButton();
-		_backfromPseudoButton.addActionListener(this);
 		_backfromRulesButton = _RulesView.getBackButton();
 		_backfromRulesButton.addActionListener(this);
 		
@@ -145,6 +143,12 @@ public class View extends JFrame implements ActionListener {
 			if(option == JOptionPane.OK_OPTION) {
 				System.exit(0);
 			}
+		}
+		
+		if (e.getSource().equals(_backfromRulesButton)) {
+			this.setContentPane(_HomeView);
+			_HomeView.requestFocus();
+			this.setVisible(true);
 		}
 	}
 }

@@ -56,9 +56,9 @@ public abstract class ViewMenu extends JLayeredPane {
 		setFocusable(true);
 		setDoubleBuffered(true);
 		
-		backButton = new JButton("BACK");
-		backButton.setSize(100,30);
-		backButton.setLocation(1050, 700);
+		backButton = new JButton("RETURN HOME");
+		backButton.setSize(150,30);
+		backButton.setLocation(700, 500);
 		
 		this.add(backPanel,new Integer(0)); //le backPanel a un index de 0 pour etre en arriere plan de tous les autres objets qui auront un index de 1
 		this.add(backButton,new Integer(1));

@@ -68,21 +68,6 @@ public class PseudoPlayersView extends ViewMenu {
 		
 	}
 	
-	public void addPlayer(int c) {
-		if(c>1 && c<6){
-			playerTextField[c].setVisible(true); /** try catch ? */
-			playerLabel[c].setVisible(true);
-			
-		}
-	}
-	
-	public void removePlayer(int c) {
-		if(c>1 && c<7){
-			playerTextField[c].setVisible(false); /** try catch ? */
-			playerLabel[c].setVisible(false);
-		
-		}
-	}
 	
 	public JButton getOkButton() {
 		return okButton;
