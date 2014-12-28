@@ -3,8 +3,6 @@ package view;
 
 import model.Model;
 
-import view.HomeView;
-
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -31,8 +29,22 @@ public class View extends JFrame implements ActionListener {
 	 */
 	private Model m;
 	
+	/**
+	 * The stack attribute
+	 * 
+	 * it contains the stack of events
+	 * 
+	 * @see Stack
+	 */
+	private Stack _stack;
+	
+	/**
+	 * The different pages of the view
+	 * 
+	 * @see View
+	 */
 	private HomeView _HomeView;;
-	private PseudoPlayersView _PseudoPlayersView;
+	//private PseudoPlayersView _PseudoPlayersView;
 	private RulesView _RulesView;
 	
 	/**
@@ -44,6 +56,7 @@ public class View extends JFrame implements ActionListener {
 	private JButton _newButton, _loadButton, _rulesButton, _exitButton, _addButton, _removeButton ;
 	private JButton _okButton;
 	
+	private int i;
 	
 	/**
 	 * <b>Constructor of the view</b>
@@ -53,10 +66,11 @@ public class View extends JFrame implements ActionListener {
 	public View(Model m) {
 		
 		this.m = m;
-		
+		this._stack = new Stack();
+		this.i = 0;
 		//Views
 		_HomeView = new HomeView();
-		_PseudoPlayersView = new PseudoPlayersView();
+		//_PseudoPlayersView = new PseudoPlayersView();
 		_RulesView = new RulesView();
 		
 		//Page de départ
@@ -88,16 +102,16 @@ public class View extends JFrame implements ActionListener {
 		_exitButton.addActionListener(this);
 				
 		//Récupération du bouton OK dans le menu de creation des profils joueurs
-		_okButton = _PseudoPlayersView.getOkButton();
-		_okButton.addActionListener(this);
+		//_okButton = _PseudoPlayersView.getOkButton();
+		//_okButton.addActionListener(this);
 		
 		//Récupération du bouton Add dans le menu de creation des profils joueurs
-		_addButton = _PseudoPlayersView.getAddButton();
-		_addButton.addActionListener(this);
+		//_addButton = _PseudoPlayersView.getAddButton();
+		//_addButton.addActionListener(this);
 		
 		//Récupération du bouton Add dans le menu de creation des profils joueurs
-		_removeButton = _PseudoPlayersView.getRemoveButton();
-		_removeButton.addActionListener(this);
+		//_removeButton = _PseudoPlayersView.getRemoveButton();
+		//_removeButton.addActionListener(this);
 		
 		
 		//Paramètre de base
@@ -114,9 +128,9 @@ public class View extends JFrame implements ActionListener {
 		return _HomeView;
 	}
 	
-	public PseudoPlayersView getPseudoPlayersView() {
-		return _PseudoPlayersView;
-	}
+	//public PseudoPlayersView getPseudoPlayersView() {
+	//	return _PseudoPlayersView;
+	//}
 	
 	public RulesView getRulesView() {
 		return _RulesView;
@@ -151,6 +165,18 @@ public class View extends JFrame implements ActionListener {
 			this.setContentPane(_HomeView);
 			_HomeView.requestFocus();
 			this.setVisible(true);
+		}
+		
+		//Si on appuie sur le bouton new game
+		//Pour l'instant on ajoute juste un event dans la stack
+		if (e.getSource().equals(_newButton)) {
+			Event _newGame = new Event(EventType.NEWGAME);
+			this._stack.addStack(_newGame);
+			
+			//Je vérifie que c'est bon ^^ 
+			//(j'affiche juste le premier mais j'ai aussi vérifié lorsque je clique sur New Game plusieurs fois)
+			System.out.println(this._stack.getItemOfStack(0).getEvent());
+			
 		}
 	}
 }
