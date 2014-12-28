@@ -42,6 +42,10 @@ public class Model {
 		return _activePlayer;
 	}
 	
+	public ArrayList<Player> getPlayers() {
+		return _players;
+	}
+
 	public LinkedList<Folk> getAvailableFolks() {
 		return _availableFolk;
 	}
