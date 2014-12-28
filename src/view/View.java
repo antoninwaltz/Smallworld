@@ -145,6 +145,8 @@ public class View extends JFrame implements ActionListener {
 			}
 		}
 		
+		//Si on appuie sur le bouton return home en étant sur la page des regles,
+		//On retourne sur la page d'accueil
 		if (e.getSource().equals(_backfromRulesButton)) {
 			this.setContentPane(_HomeView);
 			_HomeView.requestFocus();
