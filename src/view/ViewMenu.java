@@ -37,6 +37,7 @@ public abstract class ViewMenu extends JLayeredPane {
 	
 	public ViewMenu(){
 		
+		
 		ImageIcon _iconimage = new ImageIcon(backgroundImagePath);
 		image = _iconimage.getImage();
 		

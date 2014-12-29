@@ -46,6 +46,7 @@ public class View extends JFrame implements ActionListener {
 	private HomeView _HomeView;;
 	//private PseudoPlayersView _PseudoPlayersView;
 	private RulesView _RulesView;
+	private MapGameView _MapGameView;
 	
 	/**
 	 * Attributes for the buttons of the menus
@@ -72,10 +73,11 @@ public class View extends JFrame implements ActionListener {
 		_HomeView = new HomeView();
 		//_PseudoPlayersView = new PseudoPlayersView();
 		_RulesView = new RulesView();
+		_MapGameView = new MapGameView();
 		
 		//Page de départ
 		_HomeView.refresh(m.getPlayers());
-		this.setContentPane(_HomeView);
+		this.setContentPane(_MapGameView);
 		//this.setContentPane(_PseudoPlayersView);
 		
 		//Récupération des boutons de retour
@@ -138,7 +140,7 @@ public class View extends JFrame implements ActionListener {
 	}
 	
 	static public Dimension getFrameSize() {
-		Dimension frameSize = new Dimension(900,600);
+		Dimension frameSize = new Dimension(1440,900);
 		return frameSize;
 	}
 
