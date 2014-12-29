@@ -10,7 +10,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 import javax.swing.ImageIcon;
-import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 
@@ -34,10 +33,10 @@ public class MapGameView extends JLayeredPane implements MouseListener {
 	//Background
 	private String _backgroundImagePath = "images/Plateau_V1.png";
 	private Image _background;
-	private JPanel _backPanel,p,_jPanel;
+	private JPanel _backPanel,_jPanel;
 	
 	private ArrayList<Polygon> _arrayListPolygon;
-	private ArrayList<JPanel> _arrayListJPanel;
+	private ArrayList<MouseAdapter> _arrayListMouseAdapter;
 	
 	private Polygon _polygon1, _polygon2;
 	
@@ -45,11 +44,7 @@ public class MapGameView extends JLayeredPane implements MouseListener {
 	 * Constructor
 	 * 
 	 */
-	@SuppressWarnings("serial")
 	MapGameView(){
-		
-
-		
 		
 		//Background-----------------------------------------------------------
 		ImageIcon _iconimage = new ImageIcon(_backgroundImagePath);
@@ -70,111 +65,196 @@ public class MapGameView extends JLayeredPane implements MouseListener {
 		this.add(_backPanel,new Integer(0));
 		//-----------------------------------------------------------------------
 		
+		
 		//Coordonnées des polygones pour la petite map---------------------------
 
-		int x[][] = {	{0,93,124,113,70,60,72,0},
-						{0,60,93,147,200,285,235,158,81,0},
+		int x[][] = {	//0
+						{0,87,104,112,117,120,120,117,113,111,98,87,78,69,63,60,58,59,60,64,68,70,0},
+						//1
+						{99,325,312,300,293,287,283,280,278,279,280,165,163,163,117,122,126,127,127,124,120,115,108},
+						//2
+						{333,325,310,302,295,290,287,286,285,286,287,362,425,424,419,412,403},
+						//3
+						{410,426,433,431,441,450,464,478,556,553,558,529,593},
+						//4
+						{605,538,568,560,615,710,698,695,694,699,710,725,740,769},
+						//5
+						{776,744,717,702,701,703,715,718,716,775,851,860,901,876,877,987},
+						//6
+						{1000,884,912,865,782,861,876,894,911,936,954,972,989,1010,1010},
+						//7
+						{110,90,79,71,67,66,67,70,77,75,68,82,93,109,124,141,162,195,169,163},
 					};
 		
-		int y[][] = {	{125,125,176,224,241,266,324,352},
-						{350,332,349,339,312,425,472,481,536,525},
+		int y[][] = {	//0
+						{125,125,141,152,163,175,190,201,213,221,224,227,233,239,248,257,269,281,294,307,319,326,350},
+						//1
+						{125,125,133,143,149,156,164,173,186,203,215,256,260,263,226,213,199,191,172,159,151,143,135},
+						//2
+						{125,133,143,152,159,168,177,186,198,208,217,237,200,196,160,144,125},
+						//3
+						{125,158,179,207,226,240,252,260,211,208,201,169,125},	
+						//4
+						{125,170,200,208,259,216,206,199,190,184,178,173,169,125},
+						//5
+						{125,174,183,191,195,199,210,216,220,250,255,244,226,195,190,125},
+						//6
+						{125,193,228,250,349,358,347,335,328,320,318,321,327,339,125},
+						//7
+						{229,234,241,248,258,271,284,302,325,330,334,342,345,346,342,337,328,309,273,272},
 					};
 		
-		//-----------------------------------------------------------------------
+		//Création des polygones pour la petite map ------------------------------
 		
 		_arrayListPolygon = new ArrayList<Polygon>();
-		_arrayListJPanel = new ArrayList<JPanel>();
-		_polygon1 = new Polygon(x[0], y[0], x[0].length);
-		_polygon2 = new Polygon(x[1], y[1], x[1].length);
 		
+		for(int i=0; i<x.length; i++){
+			
+			_arrayListPolygon.add(new Polygon(x[i], y[i], x[i].length));
+			
+		}
+		
+		//Ajout des polygones au JPanel -------------------------------------------
 		_jPanel = new JPanel(){
 				public void paint(Graphics g) {
-					g.setColor(Color.RED);
-					g.fillPolygon(_polygon1);
-					g.setColor(Color.GREEN);
-					g.fillPolygon(_polygon2);
-			}
+					
+					for(int i = 0; i < 8; i++){
+						g.setColor(Color.BLACK);
+						g.fillPolygon(_arrayListPolygon.get(i));
+					}
+				}
 		};
 		
-		MouseAdapter ma = new MouseAdapter() {
+		//LISTENER-------------------------------------------------------------------------------------------
+		
+		//0
+		MouseAdapter ma0 = new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent me) {
 				super.mouseClicked(me);
 
-				if (_polygon1.contains(me.getPoint())) {
-					System.out.println("Clicked polygon");
+				if (_arrayListPolygon.get(0).contains(me.getPoint())) {
+					System.out.println("Clicked polygon 0");
 				}
 
 			};
 		};
+		_jPanel.addMouseListener(ma0);
 		
-		MouseAdapter ma2 = new MouseAdapter() {
+		//1
+		MouseAdapter ma1 = new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent me) {
 				super.mouseClicked(me);
 
-				if (_polygon2.contains(me.getPoint())) {
-					System.out.println("Clicked polygon 2");
+				if (_arrayListPolygon.get(1).contains(me.getPoint())) {
+					System.out.println("Clicked polygon 1");
 					
 				}
 
 			};
 		};
+		_jPanel.addMouseListener(ma1);
 		
-		_jPanel.addMouseListener(ma);
+		//2
+		MouseAdapter ma2 = new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent me) {
+				super.mouseClicked(me);
+
+				if (_arrayListPolygon.get(2).contains(me.getPoint())) {
+					System.out.println("Clicked polygon 2");
+							
+				}
+
+			};
+		};
 		_jPanel.addMouseListener(ma2);
 		
-		_jPanel.setSize(1000,1000);
+		//3
+		MouseAdapter ma3 = new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent me) {
+				super.mouseClicked(me);
+				if (_arrayListPolygon.get(3).contains(me.getPoint())) {
+					System.out.println("Clicked polygon 3");
+							
+				}
+
+			};
+		};
+		_jPanel.addMouseListener(ma3);
+		
+		//4
+		MouseAdapter ma4 = new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent me) {
+				super.mouseClicked(me);
+
+				if (_arrayListPolygon.get(4).contains(me.getPoint())) {
+					System.out.println("Clicked polygon 4");
+				}
+
+			};
+		};
+		_jPanel.addMouseListener(ma4);
+		
+		//5
+		MouseAdapter ma5 = new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent me) {
+				super.mouseClicked(me);
+
+				if (_arrayListPolygon.get(5).contains(me.getPoint())) {
+					System.out.println("Clicked polygon 5");
+				}
+
+			};
+		};
+		_jPanel.addMouseListener(ma5);
+		
+		//6
+		MouseAdapter ma6 = new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent me) {
+				super.mouseClicked(me);
+
+				if (_arrayListPolygon.get(6).contains(me.getPoint())) {
+					System.out.println("Clicked polygon 6");
+				}
+
+			};
+		};
+		_jPanel.addMouseListener(ma6);
+		
+		//7
+		MouseAdapter ma7 = new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent me) {
+				super.mouseClicked(me);
+
+				if (_arrayListPolygon.get(7).contains(me.getPoint())) {
+					System.out.println("Clicked polygon 7");
+				}
+
+			};
+		};
+		_jPanel.addMouseListener(ma7);
+		
+		
+	//--------------------------------------------------------------------------------------------------------	
+		_jPanel.setSize(1400,800);
 		this.add(_jPanel,new Integer(1));
 		
 		
-
-
-		//----------------------------------------------------------------------
-
 	}
+
+	//--------------------------------------------------------------------------------------------------------
 
 	@Override
-	public void mouseClicked(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseExited(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mousePressed(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent arg0) {
-		
-	}
-		// TODO Auto-generated method stub
-		
-	
-	
-		//-------------------------------------------------------------------------------
-
-	
-/*	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
-		if (_polygon.contains(e.getPoint())) {
-            System.out.println("LOOOL");
-        }
+		
 	}
 
 	@Override
@@ -201,69 +281,7 @@ public class MapGameView extends JLayeredPane implements MouseListener {
 		
 	}
 	
-	/*
-		for(int i = 0; i < 2; i++){
-			
-			_polygon[i] = new Polygon(x[i], y[i], x[i].length);
-			_arrayListPolygon.add(_polygon[i]);
-			System.out.println("POLYGON i : "+_polygon[i]);
-			
-			_arrayListJPanel.add(new JPanel(){
-				public void paintComponent(Graphics g) {
-					
-					g.setColor(Color.RED);
-					System.out.println("ARRAYLISTPOLYGON GET DANS LA METHODE PAINT : "+ (_arrayListPolygon.size() - 1));
-					g.fillPolygon(_arrayListPolygon.get(_arrayListPolygon.size()-1));
-				}
-				
-				public Dimension getPreferredSize() {
-					return new Dimension(1000, 1000);
-				}	
-			});
-			System.out.println("ARRAYLISTJPANEL SIZE : "+_arrayListJPanel.get(i));
-			
-		}
-
-		MouseAdapter ma = new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent me) {
-				super.mouseClicked(me);
-
-				if (_arrayListPolygon.get(0).contains(me.getPoint())) {
-					System.out.println("Clicked polygon");
-				}
-
-			};
-		};
-		
-		MouseAdapter ma2 = new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent me) {
-				super.mouseClicked(me);
-
-				if (_arrayListPolygon.get(1).contains(me.getPoint())) {
-					System.out.println("Clicked polygon 2");
-					
-				}
-
-			};
-		};
-			_arrayListJPanel.get(0).addMouseListener(ma);
-			_arrayListJPanel.get(1).addMouseListener(ma2);
-			
-			_arrayListJPanel.get(0).setSize(1000,1000);
-			_arrayListJPanel.get(1).setSize(1000,500);
-			
-			//_arrayListJPanel.get(i).addMouseListener(this);
-			
-			//System.out.print("Start..."+i);
-			//this.add(_arrayListJPanel.get(i),new Integer(1));
-			//System.out.println(_arrayListJPanel.get(i)+"OK");
-			//this.add(_arrayListJPanel.get(0),new Integer(2));
-			//this.add(_arrayListJPanel.get(1),new Integer(3));
-			
-		
-       */
-
+	
+	
 
 }
