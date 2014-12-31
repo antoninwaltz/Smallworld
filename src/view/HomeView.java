@@ -89,7 +89,7 @@ public class HomeView extends ViewMenu {
 	
 	public void refresh(ArrayList<Player> pList) {
 		for(int i=0;i<pList.size();i++) {
-			playerList.add(new JLabel(pList.get(i).toString()));
+			playerList.add(new JLabel(pList.get(i).getName()));
 			playerList.get(i).setSize(200, 300);
 			playerList.get(i).setLocation(frameWidth-250, 10+10*i);
 			this.add(playerList.get(i), new Integer(1));

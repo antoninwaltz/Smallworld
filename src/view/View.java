@@ -150,7 +150,7 @@ public class View extends JFrame implements ActionListener {
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	public synchronized void actionPerformed(ActionEvent e) {
 		if (e.getSource().equals(_rulesButton)) 
 		{
 			this.setContentPane(_RulesView);
@@ -194,8 +194,14 @@ public class View extends JFrame implements ActionListener {
 						JOptionPane.PLAIN_MESSAGE);
 				Event ev = new Event(EventType.NEWPLAYER, name);
 				this._eventStack.add(ev);
-				_HomeView.refresh(m.getPlayers());
-	
+				try {
+					Thread.sleep(200);
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				_HomeView.refresh(m.getPlayers()); // XXX
+				
 				System.out.println(this._eventStack.get(0).getEventType() + " "+name);
 			}
 		}
@@ -215,19 +221,23 @@ public class View extends JFrame implements ActionListener {
 					int id = s.toCharArray()[0]-'0';
 					Event ev = new Event(EventType.REMOVEPLAYER, id);
 					this._eventStack.add(ev);
-					_HomeView.refresh(m.getPlayers());
-		
+					_HomeView.refresh(m.getPlayers()); // XXX
+
 					System.out.println(this._eventStack.get(0).getEventType() + " "+id);
 				}
 			}
 		}
 	}
 
-	public Event popEvent() {
+	public synchronized Event popEvent() {
 		if(_eventStack.size()>0)
 			return _eventStack.remove(0);
 		else
 			return null;
+	}
+	
+	public void refresh() { // XXX not working
+		this.getContentPane().revalidate(); // idem
 	}
 }
 	

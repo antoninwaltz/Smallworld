@@ -123,6 +123,11 @@ public class Model {
 		_players.add(new Player(name));
 		System.out.println("OK");
 	}
+
+	public void delPlayer(int id) {
+		System.out.print("Deletting player "+_players.remove(id).getName()+"... ");
+		System.out.println("OK");
+	}
 	
 	public boolean hasActivePlayerAnActiveFolk() {
 		return _activePlayer.getCurrentFolk() != null;
@@ -143,5 +148,6 @@ public class Model {
 		_playerIndex %= _players.size();
 		_activePlayer = _players.get(_playerIndex);
 	}
+
 
 }

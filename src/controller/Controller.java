@@ -18,7 +18,7 @@ import view.View;
  * 
  * @author Skia
  */
-public class Controller {
+public class Controller extends Thread {
 	/**
 	 * The Model attribute
 	 * 
@@ -50,9 +50,9 @@ public class Controller {
 	 * 
 	 * It synchronizes the view and model in order to have a playable game
 	 */
-	public void play() {
+	public void run() {
 		Event ev = null;
-		while(true) {
+		while(!isInterrupted()) {
 			ev = v.popEvent();
 			if(ev==null) continue;
 			switch (ev.getEventType()) {
@@ -61,6 +61,11 @@ public class Controller {
 				break;
 			case NEWPLAYER:
 				m.newPlayer(ev.getString());
+				v.refresh(); // XXX
+				break;
+			case REMOVEPLAYER:
+				m.delPlayer(ev.getInteger());
+				v.refresh(); // XXX
 				break;
 			default:
 				break;
