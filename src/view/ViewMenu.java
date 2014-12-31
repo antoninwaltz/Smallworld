@@ -21,7 +21,7 @@ import javax.swing.JPanel;
  */
 
 public abstract class ViewMenu extends JLayeredPane {
-	
+	private static final long serialVersionUID = 1L;
 	final int frameWidth = View.getFrameSize().width;
 	final int frameHeight = View.getFrameSize().height;
 	
@@ -45,7 +45,8 @@ public abstract class ViewMenu extends JLayeredPane {
 		title = _titleimage.getImage();
 		
 		backPanel = new JPanel(){
-			
+			private static final long serialVersionUID = 1L;
+
 			public void paint(Graphics g) {
 				g.drawImage(image, 0, 0,frameWidth, frameHeight, null);
 				g.drawImage(title,frameWidth/2-295, 20, null);

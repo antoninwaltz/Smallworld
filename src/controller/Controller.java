@@ -4,6 +4,8 @@ import model.Case;
 import model.Model;
 import modelExceptions.TooFewToken;
 import modelExceptions.Unreachable;
+import view.Event;
+import view.EventType;
 import view.View;
 
 /**
@@ -49,6 +51,22 @@ public class Controller {
 	 * It synchronizes the view and model in order to have a playable game
 	 */
 	public void play() {
+		Event ev = null;
+		while(true) {
+			ev = v.popEvent();
+			if(ev==null) continue;
+			switch (ev.getEventType()) {
+			case NEWGAME:
+				m.initGame();
+				break;
+			case NEWPLAYER:
+				m.newPlayer(ev.getString());
+				break;
+			default:
+				break;
+			}
+		}
+		/*
 		m.newPlayer("Skia");
 		m.newPlayer("Gobelin");
 		m.initGame();
@@ -94,6 +112,7 @@ public class Controller {
 			m.nextPlayer();
 		}
 		m.printAvailaibleFolk();
+		*/
 	}
 
 }

@@ -25,7 +25,7 @@ import java.util.ArrayList;
  */
 
 public class MapGameView extends JLayeredPane implements MouseListener {
-	
+	private static final long serialVersionUID = 1L;
 	//Dimension
 	final int frameWidth = View.getFrameSize().width;
 	final int frameHeight = View.getFrameSize().height;
@@ -35,13 +35,25 @@ public class MapGameView extends JLayeredPane implements MouseListener {
 	private Image _background;
 	private JPanel _backPanel,_jPanel;
 	
-	private ArrayList<Polygon> _arrayListPolygon;
-	private ArrayList<MouseAdapter> _arrayListMouseAdapter;
+	private ArrayList<Polygon> _polygonList;
 	
-	private Polygon _polygon1, _polygon2;
+	// Workaround for non constant window size
+	private int[] computeX(int[] x) {
+		for (int i=0;i<x.length;i++){
+			x[i] = (int) ((x[i]/1440.0)*frameWidth);
+		}
+		return x;
+	}
+	private int[] computeY(int[] y) {
+		for (int i=0;i<y.length;i++){
+			y[i] = (int) ((y[i]/900.0)*frameHeight);
+		}
+		return y;
+	}
 	
 	/**
 	 * Constructor
+	 * @param id 
 	 * 
 	 */
 	MapGameView(){
@@ -51,7 +63,8 @@ public class MapGameView extends JLayeredPane implements MouseListener {
 		_background = _iconimage.getImage();
 		
 		_backPanel = new JPanel(){
-			
+			private static final long serialVersionUID = 1L;
+
 			public void paint(Graphics g) {
 				g.drawImage(_background, 0, 0,frameWidth, frameHeight, null);
 				
@@ -106,144 +119,49 @@ public class MapGameView extends JLayeredPane implements MouseListener {
 		
 		//Création des polygones pour la petite map ------------------------------
 		
-		_arrayListPolygon = new ArrayList<Polygon>();
+		_polygonList = new ArrayList<Polygon>();
 		
 		for(int i=0; i<x.length; i++){
 			
-			_arrayListPolygon.add(new Polygon(x[i], y[i], x[i].length));
+			_polygonList.add(new Polygon(computeX(x[i]), computeY(y[i]), x[i].length));
 			
 		}
 		
 		//Ajout des polygones au JPanel -------------------------------------------
 		_jPanel = new JPanel(){
+			private static final long serialVersionUID = 1L;
+
 				public void paint(Graphics g) {
 					
 					for(int i = 0; i < 8; i++){
 						g.setColor(Color.BLACK);
-						g.fillPolygon(_arrayListPolygon.get(i));
+						g.fillPolygon(_polygonList.get(i));
 					}
 				}
 		};
 		
 		//LISTENER-------------------------------------------------------------------------------------------
 		
-		//0
-		MouseAdapter ma0 = new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent me) {
-				super.mouseClicked(me);
+		ArrayList<MouseAdapter> ma = new ArrayList<>();
+		for(int i=0; i<x.length; i++){
+			final int polId = i;
+			ma.add(new MouseAdapter() {
+				public void mouseClicked(MouseEvent me) {
+					super.mouseClicked(me);
 
-				if (_arrayListPolygon.get(0).contains(me.getPoint())) {
-					System.out.println("Clicked polygon 0");
-				}
+					if (_polygonList.get(polId).contains(me.getPoint())) {
+						System.out.println("Polygon "+polId);
+					}
 
-			};
-		};
-		_jPanel.addMouseListener(ma0);
-		
-		//1
-		MouseAdapter ma1 = new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent me) {
-				super.mouseClicked(me);
-
-				if (_arrayListPolygon.get(1).contains(me.getPoint())) {
-					System.out.println("Clicked polygon 1");
-					
-				}
-
-			};
-		};
-		_jPanel.addMouseListener(ma1);
-		
-		//2
-		MouseAdapter ma2 = new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent me) {
-				super.mouseClicked(me);
-
-				if (_arrayListPolygon.get(2).contains(me.getPoint())) {
-					System.out.println("Clicked polygon 2");
-							
-				}
-
-			};
-		};
-		_jPanel.addMouseListener(ma2);
-		
-		//3
-		MouseAdapter ma3 = new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent me) {
-				super.mouseClicked(me);
-				if (_arrayListPolygon.get(3).contains(me.getPoint())) {
-					System.out.println("Clicked polygon 3");
-							
-				}
-
-			};
-		};
-		_jPanel.addMouseListener(ma3);
-		
-		//4
-		MouseAdapter ma4 = new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent me) {
-				super.mouseClicked(me);
-
-				if (_arrayListPolygon.get(4).contains(me.getPoint())) {
-					System.out.println("Clicked polygon 4");
-				}
-
-			};
-		};
-		_jPanel.addMouseListener(ma4);
-		
-		//5
-		MouseAdapter ma5 = new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent me) {
-				super.mouseClicked(me);
-
-				if (_arrayListPolygon.get(5).contains(me.getPoint())) {
-					System.out.println("Clicked polygon 5");
-				}
-
-			};
-		};
-		_jPanel.addMouseListener(ma5);
-		
-		//6
-		MouseAdapter ma6 = new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent me) {
-				super.mouseClicked(me);
-
-				if (_arrayListPolygon.get(6).contains(me.getPoint())) {
-					System.out.println("Clicked polygon 6");
-				}
-
-			};
-		};
-		_jPanel.addMouseListener(ma6);
-		
-		//7
-		MouseAdapter ma7 = new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent me) {
-				super.mouseClicked(me);
-
-				if (_arrayListPolygon.get(7).contains(me.getPoint())) {
-					System.out.println("Clicked polygon 7");
-				}
-
-			};
-		};
-		_jPanel.addMouseListener(ma7);
-		
+				};
+			});
+		}
+		for(MouseAdapter m : ma) {
+			_jPanel.addMouseListener(m);
+		}
 		
 	//--------------------------------------------------------------------------------------------------------	
-		_jPanel.setSize(1400,800);
+		_jPanel.setSize(frameWidth,frameHeight);
 		this.add(_jPanel,new Integer(1));
 		
 		
@@ -254,31 +172,40 @@ public class MapGameView extends JLayeredPane implements MouseListener {
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+		// forcement utile
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+		// peut etre utile pour afficher la case en vert/rouge au survol,
+		// et pas en permanence
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+		// idem
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+		// useless
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+		// idem
+	}
+	
+	
+	public void refresh() {
+		_jPanel.revalidate();
+		_backPanel.revalidate();
+		this.remove(_backPanel);
+		this.add(_backPanel);
 	}
 	
 	

@@ -1,5 +1,6 @@
 package model;
 
+import java.awt.List;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -44,6 +45,14 @@ public class Model {
 	
 	public ArrayList<Player> getPlayers() {
 		return _players;
+	}
+
+	public String[] getPlayerList() {
+		String[] plist = new String[_players.size()];
+		for(int i=0;i<_players.size();i++){
+			plist[i] = i+": "+_players.get(i).getName();
+		}
+		return plist;
 	}
 
 	public LinkedList<Folk> getAvailableFolks() {
@@ -134,4 +143,5 @@ public class Model {
 		_playerIndex %= _players.size();
 		_activePlayer = _players.get(_playerIndex);
 	}
+
 }

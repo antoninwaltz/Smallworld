@@ -6,6 +6,7 @@ import model.Model;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -23,6 +24,8 @@ import javax.swing.JOptionPane;
  * @author Skia
  */
 public class View extends JFrame implements ActionListener {
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * The model attribute
 	 * @see Model
@@ -36,7 +39,7 @@ public class View extends JFrame implements ActionListener {
 	 * 
 	 * @see Stack
 	 */
-	private Stack _stack;
+	private ArrayList<Event> _eventStack;
 	
 	/**
 	 * The different pages of the view
@@ -53,12 +56,9 @@ public class View extends JFrame implements ActionListener {
 	 * 
 	 * @see View
 	 */
-	private JButton _backfromPseudoButton, _backfromRulesButton;
+	private JButton _backfromRulesButton;
 	private JButton _newButton, _loadButton, _rulesButton, _exitButton, _addButton, _removeButton ;
-	private JButton _okButton;
-	
-	private int i;
-	
+		
 	/**
 	 * <b>Constructor of the view</b>
 	 * 
@@ -67,8 +67,7 @@ public class View extends JFrame implements ActionListener {
 	public View(Model m) {
 		
 		this.m = m;
-		this._stack = new Stack();
-		this.i = 0;
+		this._eventStack = new ArrayList<>();
 		//Views
 		_HomeView = new HomeView();
 		//_PseudoPlayersView = new PseudoPlayersView();
@@ -77,7 +76,7 @@ public class View extends JFrame implements ActionListener {
 		
 		//Page de départ
 		_HomeView.refresh(m.getPlayers());
-		this.setContentPane(_MapGameView);
+		this.setContentPane(_HomeView);
 		//this.setContentPane(_PseudoPlayersView);
 		
 		//Récupération des boutons de retour
@@ -103,6 +102,12 @@ public class View extends JFrame implements ActionListener {
 		//Récupération du bouton exit
 		_exitButton = _HomeView.getExitButton();
 		_exitButton.addActionListener(this);
+		
+		_addButton = _HomeView.getAddButton();
+		_addButton.addActionListener(this);
+		
+		_removeButton = _HomeView.getDelButton();
+		_removeButton.addActionListener(this);
 				
 		//Récupération du bouton OK dans le menu de creation des profils joueurs
 		//_okButton = _PseudoPlayersView.getOkButton();
@@ -119,7 +124,7 @@ public class View extends JFrame implements ActionListener {
 		
 		//Paramètre de base
 		this.setTitle("Smallworld UTBM");
-		this.setSize((int)View.getFrameSize().getWidth(),(int)View.getFrameSize().getHeight());
+		this.setSize(getFrameSize().width, getFrameSize().height);
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setResizable(false);
@@ -140,49 +145,89 @@ public class View extends JFrame implements ActionListener {
 	}
 	
 	static public Dimension getFrameSize() {
-		Dimension frameSize = new Dimension(1440,900);
+		Dimension frameSize = new Dimension(900,600);
 		return frameSize;
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-				
-		//Si on appuie sur le bouton des regles, on ouvre le menu des regles
-		if (e.getSource().equals(_rulesButton)) {
+		if (e.getSource().equals(_rulesButton)) 
+		{
 			this.setContentPane(_RulesView);
 			_RulesView.requestFocus();
 			this.setVisible(true);
-		}
-
-		//Si on appuie sur le bouton exit, on vérifie que l'utilisateur veut bien quitter la partie, puis on quitte ou non
-		if (e.getSource().equals(_exitButton)) {
+		} 
+		else if (e.getSource().equals(_exitButton)) 
+		{
 			int option = javax.swing.JOptionPane.showConfirmDialog(null, "Are you sure ?", "Exit", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 			if(option == JOptionPane.OK_OPTION) {
 				System.exit(0);
 			}
-		}
-
-		//Si on appuie sur le bouton return home en étant sur la page des regles,
-		//On retourne sur la page d'accueil
-		if (e.getSource().equals(_backfromRulesButton)) {
+		} 
+		else if (e.getSource().equals(_backfromRulesButton)) 
+		{
 			_HomeView.refresh(m.getPlayers());
 			this.setContentPane(_HomeView);
 			_HomeView.requestFocus();
 			this.setVisible(true);
-		}
-
-		//Si on appuie sur le bouton new game
-		//Pour l'instant on ajoute juste un event dans la stack
-		if (e.getSource().equals(_newButton)) {
+		} 
+		else if (e.getSource().equals(_newButton)) 
+		{
 			Event _newGame = new Event(EventType.NEWGAME);
-			this._stack.addStack(_newGame);
-			
-			//Je vérifie que c'est bon ^^ 
-			//(j'affiche juste le premier mais j'ai aussi vérifié lorsque je clique sur New Game plusieurs fois)
-			System.out.println(this._stack.getItemOfStack(0).getEvent());
-			
-		}
+			this._eventStack.add(_newGame);
+			this.setContentPane(_MapGameView);
+			_MapGameView.requestFocus();
+			_MapGameView.refresh();
 
+			System.out.println(this._eventStack.get(0).getEventType());	
+		}
+		else if (e.getSource().equals(_addButton)) 
+		{
+			if(m.getPlayers().size() >= 6) {
+				JOptionPane.showMessageDialog(this, "Too much players");
+			} else {
+				String  name = null;
+				while(name==null)
+					name = (String)javax.swing.JOptionPane.showInputDialog(this,
+						"Enter your name:",
+						"Name",
+						JOptionPane.PLAIN_MESSAGE);
+				Event ev = new Event(EventType.NEWPLAYER, name);
+				this._eventStack.add(ev);
+				_HomeView.refresh(m.getPlayers());
+	
+				System.out.println(this._eventStack.get(0).getEventType() + " "+name);
+			}
+		}
+		else if (e.getSource().equals(_removeButton)) 
+		{
+			if(m.getPlayerList().length==0){
+				JOptionPane.showMessageDialog(this, "No player");
+			} else {
+				String s = (String)JOptionPane.showInputDialog(this,
+						"Which player?",
+						"Who",
+						JOptionPane.PLAIN_MESSAGE,
+						null,
+						m.getPlayerList(),
+						null);
+				if(s != null){
+					int id = s.toCharArray()[0]-'0';
+					Event ev = new Event(EventType.REMOVEPLAYER, id);
+					this._eventStack.add(ev);
+					_HomeView.refresh(m.getPlayers());
+		
+					System.out.println(this._eventStack.get(0).getEventType() + " "+id);
+				}
+			}
+		}
+	}
+
+	public Event popEvent() {
+		if(_eventStack.size()>0)
+			return _eventStack.remove(0);
+		else
+			return null;
 	}
 }
 	

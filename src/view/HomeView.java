@@ -17,8 +17,8 @@ import model.Player;
  */
 
 public class HomeView extends ViewMenu {
-	
-	private JButton newButton,loadButton,rulesButton,exitButton;
+	private static final long serialVersionUID = 1L;
+	private JButton newButton,loadButton,rulesButton,exitButton,addPlayer,delPlayer;
 	private ArrayList<JLabel> playerList;
 	
 	public HomeView() {
@@ -40,6 +40,14 @@ public class HomeView extends ViewMenu {
 		exitButton.setSize(200,30);
 		exitButton.setLocation(frameWidth/2-100, 375);
 		
+		addPlayer = new JButton("Add new player");
+		addPlayer.setSize(200,30);
+		addPlayer.setLocation(frameWidth-250, 10);
+		
+		delPlayer = new JButton("Remove player");
+		delPlayer.setSize(200,30);
+		delPlayer.setLocation(frameWidth-250, 50);
+		
 		
 		
 		backButton.setVisible(false); //pas de bouton de retour sur la page principale
@@ -49,6 +57,9 @@ public class HomeView extends ViewMenu {
 		this.add(loadButton,new Integer(1));
 		this.add(rulesButton,new Integer(1));
 		this.add(exitButton,new Integer(1));
+		this.add(addPlayer,new Integer(1));
+		this.add(delPlayer,new Integer(1));
+
 
 	}
 	
@@ -68,6 +79,14 @@ public class HomeView extends ViewMenu {
 		return exitButton;
 	}
 	
+	public JButton getAddButton() {
+		return addPlayer;
+	}
+	
+	public JButton getDelButton() {
+		return delPlayer;
+	}
+	
 	public void refresh(ArrayList<Player> pList) {
 		for(int i=0;i<pList.size();i++) {
 			playerList.add(new JLabel(pList.get(i).toString()));
@@ -76,5 +95,7 @@ public class HomeView extends ViewMenu {
 			this.add(playerList.get(i), new Integer(1));
 		}
 	}
+
+	
 
 }
