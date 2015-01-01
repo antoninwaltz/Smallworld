@@ -145,7 +145,7 @@ public class View extends JFrame implements ActionListener {
 	}
 	
 	static public Dimension getFrameSize() {
-		Dimension frameSize = new Dimension(900,600);
+		Dimension frameSize = new Dimension(1440,900);
 		return frameSize;
 	}
 
