@@ -36,6 +36,7 @@ public class MapGameView extends JLayeredPane implements MouseListener {
 	private JPanel _backPanel,_jPanel;
 	
 	private ArrayList<Polygon> _polygonList;
+	private ArrayList<Event> _queue;
 	
 	// Workaround for non constant window size
 	private int[] computeX(int[] x) {
@@ -56,25 +57,24 @@ public class MapGameView extends JLayeredPane implements MouseListener {
 	 * @param id 
 	 * 
 	 */
-	MapGameView(){
+	MapGameView(ArrayList<Event> queue){
 		
+		this._queue = queue;
+		
+		//setFocusable(true);
+		setDoubleBuffered(true);
 		//Background-----------------------------------------------------------
 		ImageIcon _iconimage = new ImageIcon(_backgroundImagePath);
 		_background = _iconimage.getImage();
 		
 		_backPanel = new JPanel(){
 			private static final long serialVersionUID = 1L;
-
 			public void paint(Graphics g) {
 				g.drawImage(_background, 0, 0,frameWidth, frameHeight, null);
-				
 			}
-			
 		};
 		
 		_backPanel.setSize(new Dimension(frameWidth, frameHeight));
-		setFocusable(true);
-		setDoubleBuffered(true);
 		this.add(_backPanel,new Integer(0));
 		//-----------------------------------------------------------------------
 		
@@ -122,22 +122,18 @@ public class MapGameView extends JLayeredPane implements MouseListener {
 		_polygonList = new ArrayList<Polygon>();
 		
 		for(int i=0; i<x.length; i++){
-			
 			_polygonList.add(new Polygon(computeX(x[i]), computeY(y[i]), x[i].length));
-			
 		}
 		
 		//Ajout des polygones au JPanel -------------------------------------------
 		_jPanel = new JPanel(){
 			private static final long serialVersionUID = 1L;
-
-				public void paint(Graphics g) {
-					
-					for(int i = 0; i < 8; i++){
-						g.setColor(Color.BLACK);
-						g.fillPolygon(_polygonList.get(i));
-					}
+			public void paint(Graphics g) {
+				for(int i = 0; i < 8; i++){
+					g.setColor(new Color(0, 0, 0, 50));
+					g.fillPolygon(_polygonList.get(i));
 				}
+			}
 		};
 		
 		//LISTENER-------------------------------------------------------------------------------------------
@@ -150,9 +146,8 @@ public class MapGameView extends JLayeredPane implements MouseListener {
 					super.mouseClicked(me);
 
 					if (_polygonList.get(polId).contains(me.getPoint())) {
-						System.out.println("Polygon "+polId);
+						_queue.add(new Event(EventType.CLICKPOLY, polId));
 					}
-
 				};
 			});
 		}
@@ -162,6 +157,7 @@ public class MapGameView extends JLayeredPane implements MouseListener {
 		
 	//--------------------------------------------------------------------------------------------------------	
 		_jPanel.setSize(frameWidth,frameHeight);
+		_jPanel.validate();
 		this.add(_jPanel,new Integer(1));
 		
 		
@@ -200,15 +196,15 @@ public class MapGameView extends JLayeredPane implements MouseListener {
 		// idem
 	}
 	
-	
-	public void refresh() {
+	public void revalidate() {
+		//this.remove(_backPanel);
+		//_backPanel.revalidate();
+		
+		//this.remove(_jPanel);
+		//this.removeAll();
 		_jPanel.revalidate();
-		_backPanel.revalidate();
-		this.remove(_backPanel);
-		this.add(_backPanel);
+		this.add(_backPanel, 0);
+		this.add(_jPanel, 1);
+		this.list();
 	}
-	
-	
-	
-
 }

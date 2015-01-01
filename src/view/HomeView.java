@@ -18,10 +18,15 @@ import model.Player;
 
 public class HomeView extends ViewMenu {
 	private static final long serialVersionUID = 1L;
+	
+	private Model _m;
+	
 	private JButton newButton,loadButton,rulesButton,exitButton,addPlayer,delPlayer;
 	private ArrayList<JLabel> playerList;
 	
-	public HomeView() {
+	public HomeView(Model m) {
+		this._m = m;
+		
 		playerList = new ArrayList<>();
 		
 		newButton = new JButton("NEW GAME");
@@ -88,12 +93,20 @@ public class HomeView extends ViewMenu {
 	}
 	
 	public void refresh(ArrayList<Player> pList) {
+		for(int i=0;i<playerList.size();i++){
+			this.remove(playerList.get(i));
+		}
+		playerList.clear();
 		for(int i=0;i<pList.size();i++) {
 			playerList.add(new JLabel(pList.get(i).getName()));
 			playerList.get(i).setSize(200, 300);
-			playerList.get(i).setLocation(frameWidth-250, 10+10*i);
+			playerList.get(i).setLocation(frameWidth-250, 10+20*i);
 			this.add(playerList.get(i), new Integer(1));
 		}
+	}
+	
+	public void revalidate() {
+		refresh(_m.getPlayers());
 	}
 
 	

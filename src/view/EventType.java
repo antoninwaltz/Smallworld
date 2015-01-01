@@ -13,6 +13,7 @@ public enum EventType {
 	REDEPLOY,
 	ATTACKCASE,
 	FOLKTODECLIN,
+	CLICKPOLY,
 	
 	//Creation d'un evenement non défini
 	UNDEFINE,

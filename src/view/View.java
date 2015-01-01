@@ -69,10 +69,10 @@ public class View extends JFrame implements ActionListener {
 		this.m = m;
 		this._eventStack = new ArrayList<>();
 		//Views
-		_HomeView = new HomeView();
+		_HomeView = new HomeView(m);
 		//_PseudoPlayersView = new PseudoPlayersView();
 		_RulesView = new RulesView();
-		_MapGameView = new MapGameView();
+		_MapGameView = new MapGameView(_eventStack);
 		
 		//Page de départ
 		_HomeView.refresh(m.getPlayers());
@@ -166,20 +166,22 @@ public class View extends JFrame implements ActionListener {
 		} 
 		else if (e.getSource().equals(_backfromRulesButton)) 
 		{
-			_HomeView.refresh(m.getPlayers());
 			this.setContentPane(_HomeView);
-			_HomeView.requestFocus();
-			this.setVisible(true);
 		} 
 		else if (e.getSource().equals(_newButton)) 
 		{
-			Event _newGame = new Event(EventType.NEWGAME);
-			this._eventStack.add(_newGame);
-			this.setContentPane(_MapGameView);
-			_MapGameView.requestFocus();
-			_MapGameView.refresh();
+			if(m.getPlayers().size() < 2){
+				JOptionPane.showMessageDialog(this, "Not enough players");
 
-			System.out.println(this._eventStack.get(0).getEventType());	
+			} else {
+				Event _newGame = new Event(EventType.NEWGAME);
+				this._eventStack.add(_newGame);
+				this.setContentPane(_MapGameView);
+				this.getContentPane().revalidate();
+				this.getContentPane().setVisible(true);
+
+				System.out.println(this._eventStack.get(0).getEventType());
+			}
 		}
 		else if (e.getSource().equals(_addButton)) 
 		{
@@ -194,13 +196,6 @@ public class View extends JFrame implements ActionListener {
 						JOptionPane.PLAIN_MESSAGE);
 				Event ev = new Event(EventType.NEWPLAYER, name);
 				this._eventStack.add(ev);
-				try {
-					Thread.sleep(200);
-				} catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				_HomeView.refresh(m.getPlayers()); // XXX
 				
 				System.out.println(this._eventStack.get(0).getEventType() + " "+name);
 			}
@@ -221,7 +216,6 @@ public class View extends JFrame implements ActionListener {
 					int id = s.toCharArray()[0]-'0';
 					Event ev = new Event(EventType.REMOVEPLAYER, id);
 					this._eventStack.add(ev);
-					_HomeView.refresh(m.getPlayers()); // XXX
 
 					System.out.println(this._eventStack.get(0).getEventType() + " "+id);
 				}
@@ -236,8 +230,11 @@ public class View extends JFrame implements ActionListener {
 			return null;
 	}
 	
-	public void refresh() { // XXX not working
-		this.getContentPane().revalidate(); // idem
+	public void refresh() {
+		System.out.println("Refreshing...");
+		this.getContentPane().revalidate();
+		this.getContentPane().requestFocus();
+
 	}
 }
 	

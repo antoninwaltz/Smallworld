@@ -18,7 +18,7 @@ import view.View;
  * 
  * @author Skia
  */
-public class Controller extends Thread {
+public class Controller {
 	/**
 	 * The Model attribute
 	 * 
@@ -52,30 +52,38 @@ public class Controller extends Thread {
 	 */
 	public void run() {
 		Event ev = null;
-		while(!isInterrupted()) {
+		m.newPlayer("Skia");
+		m.newPlayer("Gobelin");
+		v.refresh();
+		while(true) {
 			ev = v.popEvent();
 			if(ev==null) continue;
 			switch (ev.getEventType()) {
 			case NEWGAME:
 				m.initGame();
+				v.refresh();
 				break;
 			case NEWPLAYER:
 				m.newPlayer(ev.getString());
-				v.refresh(); // XXX
+				v.refresh();
 				break;
 			case REMOVEPLAYER:
 				m.delPlayer(ev.getInteger());
-				v.refresh(); // XXX
+				v.refresh();
 				break;
+			case CLICKPOLY:
+				System.out.println("Clicked poly "+ev.getInteger());
+				v.refresh();
 			default:
 				break;
 			}
 		}
+		
+		
 		/*
-		m.newPlayer("Skia");
-		m.newPlayer("Gobelin");
 		m.initGame();
-		m.printAvailaibleFolk();
+		m.newPlayer("Skia");
+		m.newPlayer("Gobelin");m.printAvailaibleFolk();
 		
 		int i = 0;
 		while (true) {
