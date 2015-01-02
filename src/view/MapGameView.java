@@ -13,6 +13,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 
+import model.Model;
+
 import java.util.ArrayList;
 
 
@@ -29,11 +31,13 @@ public class MapGameView extends JLayeredPane implements MouseListener {
 	//Dimension
 	final int frameWidth = View.getFrameSize().width;
 	final int frameHeight = View.getFrameSize().height;
+
+    private Model _m;
 	
 	//Background
 	private String _backgroundImagePath = "images/Plateau_V1.png";
 	private Image _background;
-	private JPanel _backPanel,_jPanel;
+	private JPanel _backPanel, _jPanel;
 	
 	private ArrayList<Polygon> _polygonList;
 	private ArrayList<Event> _queue;
@@ -57,8 +61,8 @@ public class MapGameView extends JLayeredPane implements MouseListener {
 	 * @param id 
 	 * 
 	 */
-	MapGameView(ArrayList<Event> queue){
-		
+	MapGameView(Model m, ArrayList<Event> queue){
+		this._m = m;
 		this._queue = queue;
 		
 		//setFocusable(true);
@@ -75,7 +79,6 @@ public class MapGameView extends JLayeredPane implements MouseListener {
 		};
 		
 		_backPanel.setSize(new Dimension(frameWidth, frameHeight));
-		this.add(_backPanel,new Integer(0));
 		//-----------------------------------------------------------------------
 		
 		
@@ -176,7 +179,10 @@ public class MapGameView extends JLayeredPane implements MouseListener {
 			private static final long serialVersionUID = 1L;
 			public void paint(Graphics g) {
 				for(int i = 0; i < _polygonList.size(); i++){
-					g.setColor(new Color(0, 0, 0, 70));
+					if(_m.getCurrentPlayer().canAttack(_m.getMap().getCase(i)))
+						g.setColor(new Color(0, 255, 0, 150));
+					else
+						g.setColor(new Color(255, 0, 0, 150));
 					g.fillPolygon(_polygonList.get(i));
 				}
 			}
@@ -190,23 +196,20 @@ public class MapGameView extends JLayeredPane implements MouseListener {
 			ma.add(new MouseAdapter() {
 				public void mouseClicked(MouseEvent me) {
 					super.mouseClicked(me);
-
 					if (_polygonList.get(polId).contains(me.getPoint())) {
 						_queue.add(new Event(EventType.CLICKPOLY, polId));
 					}
 				};
 			});
 		}
-		for(MouseAdapter m : ma) {
-			_jPanel.addMouseListener(m);
+		for(MouseAdapter m1 : ma) {
+			_jPanel.addMouseListener(m1);
 		}
 		
 	//--------------------------------------------------------------------------------------------------------	
 		_jPanel.setSize(frameWidth,frameHeight);
-		_jPanel.validate();
-		this.add(_jPanel,new Integer(1));
-		
-		
+		this.add(_backPanel, 1);
+		this.add(_jPanel, 2);
 	}
 
 	//--------------------------------------------------------------------------------------------------------
@@ -242,15 +245,12 @@ public class MapGameView extends JLayeredPane implements MouseListener {
 		// idem
 	}
 	
-	public void revalidate() {
-		//this.remove(_backPanel);
-		//_backPanel.revalidate();
-		
-		//this.remove(_jPanel);
-		//this.removeAll();
+	public void boardInit() { // TODO could handle huge part of the constructor
 		_jPanel.revalidate();
-		this.add(_backPanel, 0);
-		this.add(_jPanel, 1);
-		this.list();
+	}
+	
+	public void repaint() {
+		_backPanel.repaint();
+		_jPanel.repaint();
 	}
 }

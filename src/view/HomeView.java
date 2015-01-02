@@ -24,9 +24,7 @@ public class HomeView extends ViewMenu {
 	private JButton newButton,loadButton,rulesButton,exitButton,addPlayer,delPlayer;
 	private ArrayList<JLabel> playerList;
 	
-	public HomeView(Model m) {
-		this._m = m;
-		
+	public HomeView() {
 		playerList = new ArrayList<>();
 		
 		newButton = new JButton("NEW GAME");
@@ -104,11 +102,4 @@ public class HomeView extends ViewMenu {
 			this.add(playerList.get(i), new Integer(1));
 		}
 	}
-	
-	public void revalidate() {
-		refresh(_m.getPlayers());
-	}
-
-	
-
 }

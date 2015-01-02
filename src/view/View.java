@@ -69,14 +69,14 @@ public class View extends JFrame implements ActionListener {
 		this.m = m;
 		this._eventStack = new ArrayList<>();
 		//Views
-		_HomeView = new HomeView(m);
+		_HomeView = new HomeView();
 		//_PseudoPlayersView = new PseudoPlayersView();
 		_RulesView = new RulesView();
-		_MapGameView = new MapGameView(_eventStack);
+		_MapGameView = new MapGameView(m, _eventStack);
 		
 		//Page de départ
-		_HomeView.refresh(m.getPlayers());
 		this.setContentPane(_HomeView);
+		_HomeView.refresh(m.getPlayers());
 		//this.setContentPane(_PseudoPlayersView);
 		
 		//Récupération des boutons de retour
@@ -145,7 +145,7 @@ public class View extends JFrame implements ActionListener {
 	}
 	
 	static public Dimension getFrameSize() {
-		Dimension frameSize = new Dimension(1440,900);
+		Dimension frameSize = new Dimension(900,600);
 		return frameSize;
 	}
 
@@ -177,13 +177,13 @@ public class View extends JFrame implements ActionListener {
 				Event _newGame = new Event(EventType.NEWGAME);
 				this._eventStack.add(_newGame);
 				this.setContentPane(_MapGameView);
-				this.getContentPane().revalidate();
 				this.getContentPane().setVisible(true);
+				this._MapGameView.boardInit();
 
 				System.out.println(this._eventStack.get(0).getEventType());
 			}
 		}
-		else if (e.getSource().equals(_addButton)) 
+		else if (e.getSource().equals(_addButton))
 		{
 			if(m.getPlayers().size() >= 6) {
 				JOptionPane.showMessageDialog(this, "Too much players");
@@ -200,7 +200,7 @@ public class View extends JFrame implements ActionListener {
 				System.out.println(this._eventStack.get(0).getEventType() + " "+name);
 			}
 		}
-		else if (e.getSource().equals(_removeButton)) 
+		else if (e.getSource().equals(_removeButton))
 		{
 			if(m.getPlayerList().length==0){
 				JOptionPane.showMessageDialog(this, "No player");
@@ -232,10 +232,11 @@ public class View extends JFrame implements ActionListener {
 	
 	public void refresh() {
 		System.out.println("Refreshing...");
-		this.getContentPane().revalidate();
-		this.getContentPane().requestFocus();
-
+		if(this.getContentPane() == _HomeView)
+			_HomeView.refresh(m.getPlayers());
+		else if (this.getContentPane() == _MapGameView)
+			_MapGameView.repaint();
 	}
 }
-	
+
 

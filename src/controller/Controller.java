@@ -73,7 +73,18 @@ public class Controller {
 				break;
 			case CLICKPOLY:
 				System.out.println("Clicked poly "+ev.getInteger());
+				if (!m.hasActivePlayerAnActiveFolk())
+					m.selectActivePlayerFolk((int) (Math.random() * 10) % 6);
+				try {
+					m.getCurrentPlayer().attackCase(
+							m.getMap().getCase(ev.getInteger()));
+				} catch (TooFewToken | Unreachable e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				m.nextPlayer();
 				v.refresh();
+				break;
 			default:
 				break;
 			}
