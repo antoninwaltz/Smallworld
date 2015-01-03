@@ -141,6 +141,10 @@ public class Player {
 			throw new TooPoor();
 		this._money -= q;
 	}
+	
+	public boolean isOwner(Case target) {
+		return _ownedCases.containsValue(target);
+	}
 
 	public boolean canReach(Case target) {
 		if (_ownedCases.isEmpty() && target.isOnBorder())

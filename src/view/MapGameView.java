@@ -1,47 +1,41 @@
 package view;
 
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Image;
 import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.Polygon;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
-import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 
 import model.Model;
 
-import java.util.ArrayList;
-
 
 /**
  * <b>Game page</b>
- * 
+ *
  * It is the page where we play
- * 
+ *
  * @author Antonin WALTZ
  */
 
-public class MapGameView extends JLayeredPane implements MouseListener {
+public class MapGameView extends JPanel implements MouseListener {
 	private static final long serialVersionUID = 1L;
 	//Dimension
 	final int frameWidth = View.getFrameSize().width;
 	final int frameHeight = View.getFrameSize().height;
 
     private Model _m;
-	
+
 	//Background
 	private String _backgroundImagePath = "images/Plateau_V1.png";
-	private Image _background;
-	private JPanel _backPanel, _jPanel;
-	
+
 	private ArrayList<Polygon> _polygonList;
 	private ArrayList<Event> _queue;
-	
+
 	// Workaround for non constant window size
 	private int[] computeX(int[] x) {
 		for (int i=0;i<x.length;i++){
@@ -55,33 +49,37 @@ public class MapGameView extends JLayeredPane implements MouseListener {
 		}
 		return y;
 	}
-	
+
 	/**
 	 * Constructor
-	 * @param id 
-	 * 
+	 * @param id
+	 *
 	 */
 	MapGameView(Model m, ArrayList<Event> queue){
 		this._m = m;
 		this._queue = queue;
-		
-		//setFocusable(true);
+		this.setSize(frameWidth, frameHeight);
+		_polygonList = new ArrayList<Polygon>();
+		setFocusable(true);
 		setDoubleBuffered(true);
-		//Background-----------------------------------------------------------
-		ImageIcon _iconimage = new ImageIcon(_backgroundImagePath);
-		_background = _iconimage.getImage();
-		
-		_backPanel = new JPanel(){
-			private static final long serialVersionUID = 1L;
-			public void paint(Graphics g) {
-				g.drawImage(_background, 0, 0,frameWidth, frameHeight, null);
-			}
-		};
-		
-		_backPanel.setSize(new Dimension(frameWidth, frameHeight));
-		//-----------------------------------------------------------------------
-		
-		
+	}
+
+	//===========Add every shape here, index ordered===========================
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		g.drawImage(new ImageIcon(_backgroundImagePath).getImage(), 0, 0,frameWidth, frameHeight, null);
+		for(int i = 0; i < _polygonList.size(); i++){
+			if(_m.isOwner(i))
+				g.setColor(new Color(0, 150, 0, 150));
+			else if(_m.canAttack(i))
+				g.setColor(new Color(0, 255, 0, 150));
+			else
+				g.setColor(new Color(255, 0, 0, 100));
+			g.fillPolygon(_polygonList.get(i));
+		}
+	}
+
+	public void boardInit() {
 		//Coordonnées des polygones pour la petite map---------------------------
 
 		int x[][] = {	//0
@@ -145,7 +143,7 @@ public class MapGameView extends JLayeredPane implements MouseListener {
 						//29
 						{0,5,197,203,245,202,213,0}
 					};
-		
+
 		int y[][] = {	//0
 						{125,125,141,152,163,175,190,201,213,221,224,227,233,239,248,257,269,281,294,307,319,326,350},
 						//1
@@ -153,7 +151,7 @@ public class MapGameView extends JLayeredPane implements MouseListener {
 						//2
 						{125,133,143,152,159,168,177,186,198,208,217,237,200,196,160,144,125},
 						//3
-						{125,158,179,207,226,240,252,260,211,208,201,169,125},	
+						{125,158,179,207,226,240,252,260,211,208,201,169,125},
 						//4
 						{125,170,200,208,259,216,206,199,190,184,178,173,169,125},
 						//5
@@ -207,92 +205,54 @@ public class MapGameView extends JLayeredPane implements MouseListener {
 						//29
 						{673,671,579,579,600,642,701,701}
 					};
-		
+
 		//Création des polygones pour la petite map ------------------------------
-		
-		_polygonList = new ArrayList<Polygon>();
-		
+
 		for(int i=0; i<x.length; i++){
 			_polygonList.add(new Polygon(computeX(x[i]), computeY(y[i]), x[i].length));
 		}
-		
-		//Ajout des polygones au JPanel -------------------------------------------
-		_jPanel = new JPanel(){
-			private static final long serialVersionUID = 1L;
-			public void paint(Graphics g) {
-				for(int i = 0; i < _polygonList.size(); i++){
-					if(_m.getCurrentPlayer().canAttack(_m.getMap().getCase(i)))
-						g.setColor(new Color(0, 255, 0, 150));
-					else
-						g.setColor(new Color(255, 0, 0, 150));
-					g.fillPolygon(_polygonList.get(i));
-				}
-			}
-		};
-		
+
 		//LISTENER-------------------------------------------------------------------------------------------
-		
+
 		ArrayList<MouseAdapter> ma = new ArrayList<>();
 		for(int i=0; i<x.length; i++){
 			final int polId = i;
+			final Model mod = _m;
 			ma.add(new MouseAdapter() {
 				public void mouseClicked(MouseEvent me) {
 					super.mouseClicked(me);
-					if (_polygonList.get(polId).contains(me.getPoint())) {
+					if (_polygonList.get(polId).contains(me.getPoint()) &&
+						mod.getCurrentPlayer().canAttack(mod.getMap().getCase(polId))) {
 						_queue.add(new Event(EventType.CLICKPOLY, polId));
 					}
 				};
 			});
 		}
 		for(MouseAdapter m1 : ma) {
-			_jPanel.addMouseListener(m1);
+			this.addMouseListener(m1);
 		}
-		
-	//--------------------------------------------------------------------------------------------------------	
-		_jPanel.setSize(frameWidth,frameHeight);
-		this.add(_backPanel, 1);
-		this.add(_jPanel, 2);
 	}
 
 	//--------------------------------------------------------------------------------------------------------
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
-		// forcement utile
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-		// peut etre utile pour afficher la case en vert/rouge au survol,
-		// et pas en permanence
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-		// idem
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-		// useless
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-		// idem
 	}
-	
-	public void boardInit() { // TODO could handle huge part of the constructor
-		_jPanel.revalidate();
-	}
-	
-	public void repaint() {
-		_backPanel.repaint();
-		_jPanel.repaint();
-	}
+
 }

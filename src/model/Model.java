@@ -43,6 +43,14 @@ public class Model {
 		return _activePlayer;
 	}
 	
+	public boolean isOwner(int cId) {
+		return _activePlayer.isOwner(_map.getCase(cId));
+	}
+	
+	public boolean canAttack(int cId) {
+		return _activePlayer.canAttack(_map.getCase(cId));
+	}
+	
 	public ArrayList<Player> getPlayers() {
 		return _players;
 	}
