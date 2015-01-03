@@ -1,6 +1,5 @@
 package model;
 
-import java.awt.List;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -156,6 +155,4 @@ public class Model {
 		_playerIndex %= _players.size();
 		_activePlayer = _players.get(_playerIndex);
 	}
-
-
 }

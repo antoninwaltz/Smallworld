@@ -29,27 +29,21 @@ public class HomeView extends ViewMenu {
 		
 		newButton = new JButton("NEW GAME");
 		newButton.setSize(200,30);
-		newButton.setLocation(frameWidth/2-100, 150);
 		
 		loadButton = new JButton("LOAD GAME");
 		loadButton.setSize(200,30);
-		loadButton.setLocation(frameWidth/2-100, 225);
 		
 		rulesButton = new JButton("RULES");
 		rulesButton.setSize(200,30);
-		rulesButton.setLocation(frameWidth/2-100, 300);
 		
 		exitButton = new JButton("EXIT GAME");
 		exitButton.setSize(200,30);
-		exitButton.setLocation(frameWidth/2-100, 375);
 		
 		addPlayer = new JButton("Add new player");
 		addPlayer.setSize(200,30);
-		addPlayer.setLocation(frameWidth-250, 10);
 		
 		delPlayer = new JButton("Remove player");
 		delPlayer.setSize(200,30);
-		delPlayer.setLocation(frameWidth-250, 50);
 		
 		
 		
@@ -62,7 +56,6 @@ public class HomeView extends ViewMenu {
 		this.add(exitButton,new Integer(1));
 		this.add(addPlayer,new Integer(1));
 		this.add(delPlayer,new Integer(1));
-
 
 	}
 	
@@ -90,7 +83,8 @@ public class HomeView extends ViewMenu {
 		return delPlayer;
 	}
 	
-	public void refresh(ArrayList<Player> pList) {
+	public void refresh(ArrayList<Player> pList, int w, int h) {
+		super.refresh(w, h);
 		for(int i=0;i<playerList.size();i++){
 			this.remove(playerList.get(i));
 		}
@@ -98,8 +92,15 @@ public class HomeView extends ViewMenu {
 		for(int i=0;i<pList.size();i++) {
 			playerList.add(new JLabel(pList.get(i).getName()));
 			playerList.get(i).setSize(200, 300);
-			playerList.get(i).setLocation(frameWidth-250, 10+20*i);
+			playerList.get(i).setLocation((int)(0.8*frameWidth), 10+20*i);
 			this.add(playerList.get(i), new Integer(1));
 		}
+		newButton.setLocation(frameWidth/2-100, 150);
+		loadButton.setLocation(frameWidth/2-100, 225);
+		rulesButton.setLocation(frameWidth/2-100, 300);
+		exitButton.setLocation(frameWidth/2-100, 375);
+		addPlayer.setLocation(frameWidth-250, 10);
+		delPlayer.setLocation(frameWidth-250, 50);
+
 	}
 }

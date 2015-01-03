@@ -22,8 +22,8 @@ import javax.swing.JPanel;
 
 public abstract class ViewMenu extends JLayeredPane {
 	private static final long serialVersionUID = 1L;
-	final int frameWidth = View.getFrameSize().width;
-	final int frameHeight = View.getFrameSize().height;
+	int frameWidth = View.getFrameSize().width;
+	int frameHeight = View.getFrameSize().height;
 	
 	//background of the menu pages
 	/** TODO Vérifier les images */
@@ -36,8 +36,6 @@ public abstract class ViewMenu extends JLayeredPane {
 	protected JButton backButton;
 	
 	public ViewMenu(){
-		
-		
 		ImageIcon _iconimage = new ImageIcon(backgroundImagePath);
 		image = _iconimage.getImage();
 		
@@ -60,19 +58,21 @@ public abstract class ViewMenu extends JLayeredPane {
 
 		backButton = new JButton("RETURN HOME");
 		backButton.setSize(150,30);
-		backButton.setLocation(700, 500);
 		
 		this.add(backPanel,new Integer(0)); //le backPanel a un index de 0 pour etre en arriere plan de tous les autres objets qui auront un index de 1
 		this.add(backButton,new Integer(1));
 		
 		this.setVisible(true);
-		
 	}
 
 	public JButton getBackButton(){
-		
 		return backButton;
-		
+	}
+	
+	protected void refresh(int w, int h) {
+		frameWidth = w;
+		frameHeight = h;
+		backButton.setLocation(frameWidth-200, frameHeight-50);
 	}
 				
 }

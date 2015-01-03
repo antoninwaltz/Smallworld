@@ -55,15 +55,13 @@ public class Controller {
 		m.nextPlayer();
 		v.refresh();
 		while(true) {
-			if (!m.hasActivePlayerAnActiveFolk())
-				m.selectActivePlayerFolk((int) (Math.random() * 10) % 6);
 			ev = v.popEvent();
 			if(ev==null) continue;
 			switch (ev.getEventType()) {
 			case NEWGAME:
 				m.initGame();
 				v.initBoard();
-				//v.refresh();
+				v.refresh();
 				break;
 			case NEWPLAYER:
 				m.newPlayer(ev.getString());
@@ -73,11 +71,13 @@ public class Controller {
 				m.delPlayer(ev.getInteger());
 				v.refresh();
 				break;
+			case SELECTFOLKPOWER:
+				m.selectActivePlayerFolk(ev.getInteger());
+				v.refresh();
+				break;
 			case CLICKPOLY:
-				System.out.println("Clicked poly "+ev.getInteger());
 				try {
-					m.getCurrentPlayer().attackCase(
-							m.getMap().getCase(ev.getInteger()));
+					m.getCurrentPlayer().attackCase(m.getMap().getCase(ev.getInteger()));
 				} catch (TooFewToken | Unreachable e) {
 					e.printStackTrace();
 				}

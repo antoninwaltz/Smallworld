@@ -5,9 +5,12 @@ import view.View;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+
+import model.Player;
 
 /**
  * <b>The RulesView class</b>
@@ -52,6 +55,11 @@ public class RulesView extends ViewMenu {
 		//ajout des attributs avec l'index 1 pour etre en premier plan
 		this.add(rulesLabel,new Integer(1));
 		this.add(rulesImageLabel, new Integer(1));
+		super.refresh(frameWidth, frameHeight);
+	}
+	
+	public void refresh(int w, int h) {
+		super.refresh(w, h);
 	}
 
 }

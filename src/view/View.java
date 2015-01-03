@@ -6,6 +6,9 @@ import model.Model;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.WindowListener;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
@@ -23,7 +26,7 @@ import javax.swing.JOptionPane;
  *
  * @author Skia
  */
-public class View extends JFrame implements ActionListener {
+public class View extends JFrame implements ActionListener, ComponentListener {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -59,6 +62,7 @@ public class View extends JFrame implements ActionListener {
 	private JButton _backfromRulesButton;
 	private JButton _newButton, _loadButton, _rulesButton, _exitButton, _addButton, _removeButton ;
 
+
 	/**
 	 * <b>Constructor of the view</b>
 	 *
@@ -70,14 +74,18 @@ public class View extends JFrame implements ActionListener {
 		this._eventStack = new ArrayList<>();
 		//Views
 		_HomeView = new HomeView();
-		//_PseudoPlayersView = new PseudoPlayersView();
+		_HomeView.addComponentListener(this);
 		_RulesView = new RulesView();
+		_RulesView.addComponentListener(this);
 		_MapGameView = new MapGameView(m, _eventStack);
+		_MapGameView.addComponentListener(this);
+
 
 		//Page de départ
 		this.setContentPane(_HomeView);
-		_HomeView.refresh(m.getPlayers());
+		_HomeView.refresh(m.getPlayers(), getWidth(), getHeight());
 		//this.setContentPane(_PseudoPlayersView);
+		
 
 		//Récupération des boutons de retour
 		_backfromRulesButton = _RulesView.getBackButton();
@@ -124,10 +132,10 @@ public class View extends JFrame implements ActionListener {
 
 		//Paramètre de base
 		this.setTitle("Smallworld UTBM");
-		this.setSize(getFrameSize().width, getFrameSize().height);
-		this.setLocationRelativeTo(null);
+		//this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setResizable(false);
+		this.setResizable(true);
+		this.setSize(getWidth(), getHeight());
 		this.setVisible(true);
 
 	}
@@ -156,6 +164,7 @@ public class View extends JFrame implements ActionListener {
 			this.setContentPane(_RulesView);
 			_RulesView.requestFocus();
 			this.setVisible(true);
+			refresh();
 		}
 		else if (e.getSource().equals(_exitButton))
 		{
@@ -167,6 +176,7 @@ public class View extends JFrame implements ActionListener {
 		else if (e.getSource().equals(_backfromRulesButton))
 		{
 			this.setContentPane(_HomeView);
+			refresh();
 		}
 		else if (e.getSource().equals(_newButton))
 		{
@@ -228,16 +238,35 @@ public class View extends JFrame implements ActionListener {
 	}
 
 	public void initBoard() {
-		this._MapGameView.boardInit();
+		this._MapGameView.drawBoard();
 		this.setContentPane(_MapGameView);
 	}
 
 	public void refresh() {
 		System.out.println("Refreshing...");
 		if(this.getContentPane() == _HomeView)
-			_HomeView.refresh(m.getPlayers());
+			_HomeView.refresh(m.getPlayers(), getWidth(), getHeight());
+		else if(this.getContentPane() == _RulesView)
+			_RulesView.refresh(getWidth(), getHeight());
 		else if (this.getContentPane() == _MapGameView)
-			_MapGameView.repaint();
+			_MapGameView.refresh(this.getWidth(), this.getHeight());
+	}
+
+	@Override
+	public void componentHidden(ComponentEvent e) {		
+	}
+
+	@Override
+	public void componentMoved(ComponentEvent e) {
+	}
+
+	@Override
+	public void componentResized(ComponentEvent e) {
+			refresh();		
+	}
+
+	@Override
+	public void componentShown(ComponentEvent e) {		
 	}
 }
 

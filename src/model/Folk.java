@@ -20,6 +20,14 @@ public class Folk {
 	public String toString() {
 		return _name + "-" + _power;
 	}
+	
+	public String getName() {
+		return _name;
+	}
+	
+	public Power getPower() {
+		return _power;
+	}
 
 	public ArrayList<FolkToken> getToken() {
 		return _token;

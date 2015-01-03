@@ -1,8 +1,10 @@
 package view;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Polygon;
+import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -11,6 +13,7 @@ import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
+import model.Folk;
 import model.Model;
 
 
@@ -22,11 +25,11 @@ import model.Model;
  * @author Antonin WALTZ
  */
 
-public class MapGameView extends JPanel implements MouseListener {
+public class MapGameView extends JPanel {
 	private static final long serialVersionUID = 1L;
 	//Dimension
-	final int frameWidth = View.getFrameSize().width;
-	final int frameHeight = View.getFrameSize().height;
+	int frameWidth = View.getFrameSize().width;
+	int frameHeight = View.getFrameSize().height;
 
     private Model _m;
 
@@ -35,6 +38,10 @@ public class MapGameView extends JPanel implements MouseListener {
 
 	private ArrayList<Polygon> _polygonList;
 	private ArrayList<Event> _queue;
+	private ArrayList<Rectangle> _folkList;
+	
+	private ArrayList<MouseListener> mouseEvent = new ArrayList<>();
+
 
 	// Workaround for non constant window size
 	private int[] computeX(int[] x) {
@@ -59,7 +66,8 @@ public class MapGameView extends JPanel implements MouseListener {
 		this._m = m;
 		this._queue = queue;
 		this.setSize(frameWidth, frameHeight);
-		_polygonList = new ArrayList<Polygon>();
+		_polygonList = new ArrayList<>();
+		_folkList = new ArrayList<>();
 		setFocusable(true);
 		setDoubleBuffered(true);
 	}
@@ -67,7 +75,9 @@ public class MapGameView extends JPanel implements MouseListener {
 	//===========Add every shape here, index ordered===========================
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
+		//====BACKGROUND====//
 		g.drawImage(new ImageIcon(_backgroundImagePath).getImage(), 0, 0,frameWidth, frameHeight, null);
+		//====POLYGONES====//
 		for(int i = 0; i < _polygonList.size(); i++){
 			if(_m.isOwner(i))
 				g.setColor(new Color(0, 150, 0, 150));
@@ -77,11 +87,33 @@ public class MapGameView extends JPanel implements MouseListener {
 				g.setColor(new Color(255, 0, 0, 100));
 			g.fillPolygon(_polygonList.get(i));
 		}
+		//====FOLK-STACK====//
+		g.setFont(new Font("Helvetica", Font.BOLD, (int)(0.015*frameWidth)));
+		for(int i = 0; i < 6; i++){
+			//BACKGROUND
+			int x = (int)_folkList.get(i).getX();
+			int y = (int)_folkList.get(i).getY();
+			int w = (int)_folkList.get(i).getWidth();
+			int h = (int)_folkList.get(i).getHeight();
+			g.setColor(new Color(0, 0, 255));
+			g.fillRect(x, y, w, h);
+			//TEXT
+			g.setColor(Color.BLACK);
+			x += 10; 
+			y += 20;
+			g.drawString(_m.getAvailableFolks().get(i).getName(), x, y);
+			g.drawString(_m.getAvailableFolks().get(i).getPower().toString(), x, y+20);
+		}
+		//====PLAYER-INFO====//
+		g.setFont(new Font("Helvetica", Font.BOLD, (int)(0.03*frameWidth)));
+		g.setColor(Color.RED);
+		g.drawString(_m.getCurrentPlayer().getName(),
+				(int)(0.04*frameWidth), 
+				(int)(0.87*frameHeight));
 	}
 
-	public void boardInit() {
+	public void drawBoard() {
 		//Coordonnées des polygones pour la petite map---------------------------
-
 		int x[][] = {	//0
 						{0,87,104,112,117,120,120,117,113,111,98,87,78,69,63,60,58,59,60,64,68,70,0},
 						//1
@@ -207,18 +239,31 @@ public class MapGameView extends JPanel implements MouseListener {
 					};
 
 		//Création des polygones pour la petite map ------------------------------
-
+		_polygonList.clear();
 		for(int i=0; i<x.length; i++){
 			_polygonList.add(new Polygon(computeX(x[i]), computeY(y[i]), x[i].length));
 		}
+		_folkList.clear();
+		for(int i=0;i<6;i++){
+			int X = (int)(0.75*frameWidth);
+			int Y = (int)(0.3*frameHeight+0.11*frameHeight*i);
+			int w = (int)(0.2*frameWidth);
+			int h = (int)(0.1*frameHeight);
+			_folkList.add(new Rectangle(X, Y, w, h));
+		}
 
-		//LISTENER-------------------------------------------------------------------------------------------
+		//LISTENERS------------------------------------------------------------------------------------------
 
-		ArrayList<MouseAdapter> ma = new ArrayList<>();
+		
+		for(MouseListener ml : mouseEvent) {
+			removeMouseListener(ml);
+		}
+		mouseEvent.clear();
+		//====Polys====//
 		for(int i=0; i<x.length; i++){
 			final int polId = i;
 			final Model mod = _m;
-			ma.add(new MouseAdapter() {
+			mouseEvent.add(new MouseAdapter() {
 				public void mouseClicked(MouseEvent me) {
 					super.mouseClicked(me);
 					if (_polygonList.get(polId).contains(me.getPoint()) &&
@@ -228,31 +273,36 @@ public class MapGameView extends JPanel implements MouseListener {
 				};
 			});
 		}
-		for(MouseAdapter m1 : ma) {
+		for(MouseListener m1 : mouseEvent) {
+			this.addMouseListener(m1);
+		}
+		mouseEvent.clear();
+		
+		//====FolkStack====//
+		for(int i=0; i<6; i++){
+			final int folkId = i;
+			final Model mod = _m;
+			mouseEvent.add(new MouseAdapter() {
+				public void mouseClicked(MouseEvent me) {
+					super.mouseClicked(me);
+					if (_folkList.get(folkId).contains(me.getPoint()) &&
+							!mod.hasActivePlayerAnActiveFolk()) {
+						_queue.add(new Event(EventType.SELECTFOLKPOWER, folkId));
+					}
+				};
+			});
+		}
+		for(MouseListener m1 : mouseEvent) {
 			this.addMouseListener(m1);
 		}
 	}
-
-	//--------------------------------------------------------------------------------------------------------
-
-	@Override
-	public void mouseClicked(MouseEvent e) {
+	
+	public void refresh(int w, int h) {
+		if (w != frameWidth || h != frameHeight) {
+			frameWidth = w;
+			frameHeight = h;
+			drawBoard();
+		}
+		repaint();
 	}
-
-	@Override
-	public void mouseEntered(MouseEvent e) {
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-	}
-
 }

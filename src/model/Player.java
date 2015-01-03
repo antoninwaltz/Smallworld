@@ -157,10 +157,14 @@ public class Player {
 	}
 
 	public boolean canAttack(Case target) {
-		if (_ownedCases.containsKey(target.getId())) // don't attack yourself!
-			return false;
-		if (canReach(target) && target.getTokenNb() < getNbFreeToken())
-			return true;
+		try {
+			if (_ownedCases.containsKey(target.getId())) // don't attack
+															// yourself!
+				return false;
+			if (canReach(target) && target.getTokenNb() < getNbFreeToken())
+				return true;
+		} finally {
+		}
 		return false;
 	}
 
