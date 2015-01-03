@@ -34,7 +34,7 @@ public class MapGameView extends JPanel {
     private Model _m;
 
 	//Background
-	private String _backgroundImagePath = "images/Plateau_V1.png";
+	private String _backgroundImagePath = "images/gameview.png";
 
 	private ArrayList<Polygon> _polygonList;
 	private ArrayList<Event> _queue;
