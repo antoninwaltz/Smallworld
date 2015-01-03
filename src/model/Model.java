@@ -73,31 +73,30 @@ public class Model {
 	
 	public void initFolk() {
 		System.out.print("Initializing folks... ");
-		_folkQueue.add(new Folk("Elves", 5));
-		_folkQueue.add(new Folk("Dwarves", 4));
-		_folkQueue.add(new Folk("Orks", 5));
-		_folkQueue.add(new Folk("Halfelins", 6));
-		_folkQueue.add(new Folk("Goblins", 7));
-		_folkQueue.add(new Folk("Giants", 5));
-		_folkQueue.add(new Folk("Trolls", 5));
-		_folkQueue.add(new Folk("Amazones", 5));
-		_folkQueue.add(new Folk("Wizards", 5));
-		_folkQueue.add(new Folk("Cagneux", 4));
+		_folkQueue.add(new Folk("INFO", 5));
+		_folkQueue.add(new Folk("MC", 4));
+		_folkQueue.add(new Folk("EDIM", 5));
+		_folkQueue.add(new Folk("EE", 6));
+		_folkQueue.add(new Folk("IMSI", 7));
+		_folkQueue.add(new Folk("PROFESSEURS", 5));
+		_folkQueue.add(new Folk("CHERCHEURS", 5));
+		_folkQueue.add(new Folk("DOCTORANTS", 5));
+		_folkQueue.add(new Folk("ADMINISTRATIFS", 5));
+		_folkQueue.add(new Folk("TC", 4));
 		System.out.println("OK");
 	}
 
 	public void initPower() {
 		System.out.print("Initializing powers... ");
-		_powerQueue.add(new Power(PowerType.BLOUSEUX, 4));
-		_powerQueue.add(new Power(PowerType.FROM_THE_FOREST, 5));
-		_powerQueue.add(new Power(PowerType.SWAG, 5));
-		_powerQueue.add(new Power(PowerType.SUPER_SWAG, 6));
-		_powerQueue.add(new Power(PowerType.CHELOUS, 6));
-		_powerQueue.add(new Power(PowerType.TROP_NULS, 6));
-		_powerQueue.add(new Power(PowerType.FESTIFS, 3));
-		_powerQueue.add(new Power(PowerType.NIAIS, 4));
-		_powerQueue.add(new Power(PowerType.STRESSES, 5));
+		_powerQueue.add(new Power(PowerType.CHIMISTES, 4));
+		_powerQueue.add(new Power(PowerType.ANCIENS, 4));
+		_powerQueue.add(new Power(PowerType.FESTIFS, 5));
+		_powerQueue.add(new Power(PowerType.BLOUSEUX, 5));
+		_powerQueue.add(new Power(PowerType.BARMANS, 3));
+		_powerQueue.add(new Power(PowerType.MATHEUX, 4));
 		_powerQueue.add(new Power(PowerType.BOSSEURS, 5));
+		_powerQueue.add(new Power(PowerType.SPORTIFS, 3));
+		_powerQueue.add(new Power(PowerType.LITTERAIRES, 4));
 		System.out.println("OK");
 	}
 
