@@ -39,8 +39,11 @@ public class MapGameView extends JPanel {
 	private ArrayList<Polygon> _polygonList;
 	private ArrayList<Event> _queue;
 	private ArrayList<Rectangle> _folkList;
-	
+	private Rectangle _nextButton;
+	private Rectangle _redeploy;
+
 	private ArrayList<MouseListener> mouseEvent = new ArrayList<>();
+	private Rectangle _toDeline;
 
 
 	// Workaround for non constant window size
@@ -54,6 +57,22 @@ public class MapGameView extends JPanel {
 		for (int i=0;i<y.length;i++){
 			y[i] = (int) ((y[i]/900.0)*frameHeight);
 		}
+		return y;
+	}
+	private int getBarycenterX(int id) {
+		int x=0;
+		for(int i=0;i<_polygonList.get(id).npoints;i++) {
+			x += _polygonList.get(id).xpoints[i];
+		}
+		x /= _polygonList.get(id).npoints;
+		return x;
+	}
+	private int getBarycenterY(int id) {
+		int y=0;
+		for(int i=0;i<_polygonList.get(id).npoints;i++) {
+			y += _polygonList.get(id).ypoints[i];
+		}
+		y /= _polygonList.get(id).npoints;
 		return y;
 	}
 
@@ -77,47 +96,119 @@ public class MapGameView extends JPanel {
 	//===========Add every shape here, index ordered===========================
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
+		int x, y, w, h;
 		//====BACKGROUND====//
 		g.drawImage(new ImageIcon(_backgroundImagePath).getImage(), 0, 0,frameWidth, frameHeight, null);
 		//====POLYGONES====//
 		for(int i = 0; i < _polygonList.size(); i++){
+			// ---BACKGROUND--- //
 			if(_m.isOwner(i))
 				g.setColor(new Color(0, 150, 0, 150));
-			else if(_m.canAttack(i))
+			else if(_m.canAttack(i) && !_m.isRedeploying())
 				g.setColor(new Color(0, 255, 0, 150));
 			else
-				g.setColor(new Color(255, 0, 0, 100));
+				g.setColor(new Color(255, 0, 0, 0));
 			g.fillPolygon(_polygonList.get(i));
+			// ---TokenNumber--- //
+			g.setColor(new Color(0, 0, 0));
+			g.drawString(_m.getMap().getCase(i).getTokenNb()+"",
+					getBarycenterX(i),
+					getBarycenterY(i));
 		}
 		//====FOLK-STACK====//
 		g.setFont(new Font("Helvetica", Font.BOLD, (int)(0.015*frameWidth)));
 		for(int i = 0; i < 6; i++){
 			//BACKGROUND
-			int x = (int)_folkList.get(i).getX();
-			int y = (int)_folkList.get(i).getY();
-			int w = (int)_folkList.get(i).getWidth();
-			int h = (int)_folkList.get(i).getHeight();
+			x = (int)_folkList.get(i).getX();
+			y = (int)_folkList.get(i).getY();
+			w = (int)_folkList.get(i).getWidth();
+			h = (int)_folkList.get(i).getHeight();
 			g.setColor(new Color(0, 0, 255));
 			g.fillRect(x, y, w, h);
 			//TEXT
 			g.setColor(Color.BLACK);
 			x += 10; 
 			y += 20;
-			g.drawString(_m.getAvailableFolks().get(i).getName(), x, y);
-			g.drawString(_m.getAvailableFolks().get(i).getPower().toString(), x, y+20);
+			g.drawString(_m.getAvailableFolks().get(i).getName()+" "+
+						 _m.getAvailableFolks().get(i).getInitialTokNb(), x, y);
+			g.drawString(_m.getAvailableFolks().get(i).getPower()+" "+
+						 _m.getAvailableFolks().get(i).getPower().getInitialToken(), x, y+20);
 		}
 		//====PLAYER-INFO====//
+		// ---Name--- //
 		g.setFont(new Font("Helvetica", Font.BOLD, (int)(0.03*frameWidth)));
-		g.setColor(Color.RED);
+		g.setColor(Color.BLACK);
 		g.drawString(_m.getCurrentPlayer().getName(),
 				(int)(0.04*frameWidth), 
-				(int)(0.87*frameHeight));
+				(int)(0.9*frameHeight));
+		// ---Money--- //
+		g.setColor(Color.YELLOW);
+		g.drawString(_m.getCurrentPlayer().getMoney()+"",
+				(int)(0.14*frameWidth), 
+				(int)(0.96*frameHeight));
+		// ---Folk--- //
+		g.setColor(Color.GREEN);
+		String f = (_m.getCurrentPlayer().getCurrentFolk() != null) ? 
+				_m.getCurrentPlayer().getCurrentFolk().toString() : 
+				"Pas de peuple";
+		g.drawString(f,
+				(int)(0.2*frameWidth), 
+				(int)(0.9*frameHeight));
+		// ---FreeFolkToken--- //
+		g.setColor(new Color(0, 150, 0));
+		g.drawString(_m.getCurrentPlayer().getNbFreeToken()+"",
+				(int)(0.2*frameWidth), 
+				(int)(0.96*frameHeight));
+		//====ACTION-BUTTONS====//
+		// ---NextPlayer--- //
+		x = (int)_nextButton.getX();
+		y = (int)_nextButton.getY();
+		w = (int)_nextButton.getWidth();
+		h = (int)_nextButton.getHeight();
+		g.setColor(new Color(150, 150, 150));
+		g.fillRect(x, y, w, h);
+		x += (int)(0.005*frameWidth);
+		y += (int)(0.04*frameHeight);
+		if(_m.getCurrentPlayer().getNbFreeToken() == 0)
+			g.setColor(Color.BLACK);
+		else
+			g.setColor(Color.GRAY);
+		g.setFont(new Font("Helvetica", Font.BOLD, (int)(0.02*frameWidth)));
+		g.drawString("Suivant", x, y);
+		// ---Redeploying--- //
+		x = (int)_redeploy.getX();
+		y = (int)_redeploy.getY();
+		w = (int)_redeploy.getWidth();
+		h = (int)_redeploy.getHeight();
+		g.setColor(new Color(150, 150, 150));
+		g.fillRect(x, y, w, h);
+		x += (int)(0.005*frameWidth);
+		y += (int)(0.04*frameHeight);
+		if(_m.canRedeploy())
+			g.setColor(Color.BLACK);
+		else
+			g.setColor(Color.GRAY);
+		g.drawString("Redeployer", x, y);
+		// ---ToDeline--- //
+		x = (int)_toDeline.getX();
+		y = (int)_toDeline.getY();
+		w = (int)_toDeline.getWidth();
+		h = (int)_toDeline.getHeight();
+		g.setColor(new Color(150, 150, 150));
+		g.fillRect(x, y, w, h);
+		x += (int)(0.005*frameWidth);
+		y += (int)(0.04*frameHeight);
+		if(_m.canDeline())
+			g.setColor(Color.BLACK);
+		else
+			g.setColor(Color.GRAY);
+		g.drawString("Passer en declin", x, y);
 	}
 
 	public void drawBoard() {
 		//Coordonnées des polygones pour la petite map---------------------------
 		int x[][] = {	//0
-						{0,87,104,112,117,120,120,117,113,111,98,87,78,69,63,60,58,59,60,64,68,70,0},
+						{0,0,0,87,104,112,117,120,120,117,113,111,98,87,78,69,63,60,58,59,60,64,68,70,0},
 						//1
 						{99,325,312,300,293,287,283,280,278,279,280,165,163,163,117,122,126,127,127,124,120,115,108},
 						//2
@@ -173,13 +264,13 @@ public class MapGameView extends JPanel {
 						//27
 						{667,716,751,754,760,783,803,824,848,869,881,810,800,745,745,740},
 						//28
-						{945,942,937,927,915,894,876,852,823,792,761,1010,1010},
+						{945,942,937,927,915,894,876,852,823,792,761,1010,1010,1010,1010,1010},
 						//29
 						{0,5,197,203,245,202,213,0}
 					};
 
 		int y[][] = {	//0
-						{125,125,141,152,163,175,190,201,213,221,224,227,233,239,248,257,269,281,294,307,319,326,350},
+						{125,125,125,125,141,152,163,175,190,201,213,221,224,227,233,239,248,257,269,281,294,307,319,326,350},
 						//1
 						{125,125,133,143,149,156,164,173,186,203,215,256,260,263,226,213,199,191,172,159,151,143,135},
 						//2
@@ -235,7 +326,7 @@ public class MapGameView extends JPanel {
 						//27
 						{600,701,701,697,693,683,673,660,644,629,617,551,549,564,572,575},
 						//28
-						{508,524,542,567,589,615,633,651,670,688,701,701,502},
+						{508,524,542,567,589,615,633,651,670,688,701,701,701,701,502,502},
 						//29
 						{673,671,579,579,600,642,701,701}
 					};
@@ -253,10 +344,21 @@ public class MapGameView extends JPanel {
 			int h = (int)(0.1*frameHeight);
 			_folkList.add(new Rectangle(X, Y, w, h));
 		}
+		_nextButton = new Rectangle((int)(0.61*frameWidth),
+				(int)(0.92*frameHeight),
+				(int)(0.1*frameWidth),
+				(int)(0.05*frameHeight));
+		_redeploy = new Rectangle((int)(0.56*frameWidth),
+				(int)(0.865*frameHeight),
+				(int)(0.15*frameWidth),
+				(int)(0.05*frameHeight));
+		_toDeline = new Rectangle((int)(0.38*frameWidth),
+				(int)(0.92*frameHeight),
+				(int)(0.22*frameWidth),
+				(int)(0.05*frameHeight));
 
 		//LISTENERS------------------------------------------------------------------------------------------
 
-		
 		for(MouseListener ml : mouseEvent) {
 			removeMouseListener(ml);
 		}
@@ -266,27 +368,27 @@ public class MapGameView extends JPanel {
 			final int polId = i;
 			final Model mod = _m;
 			mouseEvent.add(new MouseAdapter() {
-				public void mouseClicked(MouseEvent me) {
-					super.mouseClicked(me);
-					if (_polygonList.get(polId).contains(me.getPoint()) &&
-						mod.getCurrentPlayer().canAttack(mod.getMap().getCase(polId))) {
-						_queue.add(new Event(EventType.CLICKPOLY, polId));
+				public synchronized void mouseClicked(MouseEvent me) {
+					if (_polygonList.get(polId).contains(me.getPoint())) {
+						if(mod.isOwner(polId) && 
+								mod.isRedeploying() && 
+								mod.getCurrentPlayer().getNbFreeToken()>0) {
+							_queue.add(new Event(EventType.CLICKPOLY, polId));
+						}
+						else if(mod.getCurrentPlayer().canAttack(mod.getMap().getCase(polId))) {
+							_queue.add(new Event(EventType.ATTACKCASE, polId));
+						}
 					}
+					
 				};
 			});
 		}
-		for(MouseListener m1 : mouseEvent) {
-			this.addMouseListener(m1);
-		}
-		mouseEvent.clear();
-		
 		//====FolkStack====//
 		for(int i=0; i<6; i++){
 			final int folkId = i;
 			final Model mod = _m;
 			mouseEvent.add(new MouseAdapter() {
-				public void mouseClicked(MouseEvent me) {
-					super.mouseClicked(me);
+				public synchronized void mouseClicked(MouseEvent me) {
 					if (_folkList.get(folkId).contains(me.getPoint()) &&
 							!mod.hasActivePlayerAnActiveFolk()) {
 						_queue.add(new Event(EventType.SELECTFOLKPOWER, folkId));
@@ -294,11 +396,34 @@ public class MapGameView extends JPanel {
 				};
 			});
 		}
+		//====ActionButtons====//
+		mouseEvent.add(new MouseAdapter() {
+			public synchronized void mouseClicked(MouseEvent me) {
+				if (_nextButton.contains(me.getPoint()) &&
+						_m.getCurrentPlayer().getNbFreeToken() == 0) {
+					_queue.add(new Event(EventType.NEXTPLAYER));
+				}
+			};
+		});
+		mouseEvent.add(new MouseAdapter() {
+			public synchronized void mouseClicked(MouseEvent me) {
+				if (_redeploy.contains(me.getPoint())) {
+					_queue.add(new Event(EventType.REDEPLOY));
+				}
+			};
+		});
+		mouseEvent.add(new MouseAdapter() {
+			public synchronized void mouseClicked(MouseEvent me) {
+				if (_toDeline.contains(me.getPoint()) && _m.canDeline()) {
+					_queue.add(new Event(EventType.FOLKTODECLINE));
+				}
+			};
+		});
 		for(MouseListener m1 : mouseEvent) {
 			this.addMouseListener(m1);
 		}
 	}
-	
+
 	public void refresh(int w, int h) {
 		if (w != frameWidth || h != frameHeight) {
 			frameWidth = w;

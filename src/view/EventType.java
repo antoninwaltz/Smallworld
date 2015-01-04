@@ -12,8 +12,9 @@ public enum EventType {
 	SELECTFOLKPOWER,
 	REDEPLOY,
 	ATTACKCASE,
-	FOLKTODECLIN,
+	FOLKTODECLINE,
 	CLICKPOLY,
+	NEXTPLAYER,
 	
 	//Creation d'un evenement non défini
 	UNDEFINE,

@@ -3,6 +3,9 @@ package model;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
+import modelExceptions.TooFewToken;
+import modelExceptions.Unreachable;
+
 
 /**
  * <b>The Model class</b>
@@ -19,6 +22,8 @@ public class Model {
 	private ArrayList<Folk> _folkQueue;
 	private ArrayList<Power> _powerQueue;
 	private LinkedList<Folk> _availableFolk;
+	private boolean _redeploying;
+	private boolean _canDecline;
 
 	/**
 	 * <b>Constructor of the model</b> It only build the attributes
@@ -66,6 +71,18 @@ public class Model {
 		return _availableFolk;
 	}
 
+	public boolean isRedeploying() {
+		return _redeploying;
+	}
+	
+	public boolean canDeline() {
+		return hasActivePlayerAnActiveFolk() && _canDecline;
+	}
+
+	public boolean canRedeploy() {
+		return hasActivePlayerAnActiveFolk() && _activePlayer.getControlledCaseNumber()>0;
+	}
+//===========================================================================//
 	public void initGame() {
 		_activePlayer = _players.get(0);
 		initMap();
@@ -139,7 +156,11 @@ public class Model {
 		return _activePlayer.getCurrentFolk() != null;
 	}
 
+	
+	//============================================================================//
 	public void selectActivePlayerFolk(int nb) {
+		System.out.print("Selecting folk "+_availableFolk.get(nb)+"... ");
+		_canDecline = false;
 		for (int i = 0; i < nb; i++)
 			_availableFolk.get(i).incValue();
 		Folk f = _availableFolk.remove(nb);
@@ -147,11 +168,37 @@ public class Model {
 		n.setPower(_powerQueue.remove(0));
 		_availableFolk.addLast(n);
 		_activePlayer.selectFolk(f, nb);
+		System.out.println("OK");
+	}
+	
+	public void attack(int cId) {
+		_canDecline = false;
+		try {
+			_activePlayer.attackCase(_map.getCase(cId));
+		} catch (TooFewToken | Unreachable e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void nextPlayer() {
+		_redeploying = false;
+		_canDecline = true;
 		_playerIndex++;
 		_playerIndex %= _players.size();
 		_activePlayer = _players.get(_playerIndex);
 	}
+	
+	public void playerToDeline() {
+		_activePlayer.folkToDecline();
+	}
+
+	public void setRedeploying() {
+		System.out.print("Redeploying... ");
+		_canDecline = false;
+		_redeploying = true;
+		_activePlayer.setRedeploying();
+		System.out.println("OK");
+	}
+
+
 }

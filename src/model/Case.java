@@ -54,18 +54,43 @@ public class Case {
 		return _tokenNb;
 	}
 	
+	public int getFolkTokenNb() {
+		int i = 0;
+		for(Token t : _tokens) {
+			if(t instanceof FolkToken)
+				i++;
+		}
+		return i;
+	}
+	
 	/* === END (GET/SET)ERS === */
 	public void addToken(Token t) {
 		_tokens.add(t);
 		_tokenNb++;
 	}
 	
-	public FolkToken remOneFolkToken() {
+	public FolkToken removeOneFolkToken() {
 		for(int i=0;i<_tokenNb;i++){
-			if(_tokens.get(i) instanceof FolkToken)
-				return (FolkToken) _tokens.remove(i);
+			if(_tokens.get(i) instanceof FolkToken) {
+				FolkToken ft = (FolkToken) _tokens.remove(i);
+				_tokenNb--;
+				return ft;
+			}
 		}
 		return null;
+	}
+	
+	public ArrayList<FolkToken> getGarnison() {
+		ArrayList<FolkToken> tList = new ArrayList<>();
+		for(int i=1;i<_tokenNb;i++) {
+			if(_tokens.get(i) instanceof FolkToken) {
+				FolkToken ft = (FolkToken) _tokens.get(i);
+				tList.add(ft);
+			}
+		}
+		_tokens.removeAll(tList);
+		_tokenNb-=tList.size();
+		return tList;
 	}
 	
 	public boolean isOnBorder() {

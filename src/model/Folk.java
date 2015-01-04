@@ -29,6 +29,10 @@ public class Folk {
 		return _power;
 	}
 
+	public int getInitialTokNb() {
+		return _initialTokenNb;
+	}
+
 	public ArrayList<FolkToken> getToken() {
 		return _token;
 	}

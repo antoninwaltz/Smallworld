@@ -73,7 +73,7 @@ public class View extends JFrame implements ActionListener, ComponentListener {
 
 		//Paramètre de base
 		this.setTitle("Smallworld UTBM");
-		//this.setLocationRelativeTo(null);
+		//this.setUndecorated(true);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setMinimumSize(new Dimension(600, 480));
 		this.setResizable(true);
@@ -213,7 +213,7 @@ public class View extends JFrame implements ActionListener, ComponentListener {
 		if(this.getContentPane() == _menu)
 			_menu.refresh(getWidth(), getHeight());
 		else if (this.getContentPane() == _MapGameView)
-			_MapGameView.refresh(this.getWidth(), this.getHeight());
+			_MapGameView.refresh(this.getWidth(), this.getHeight()-20);
 	}
 
 	@Override

@@ -63,6 +63,9 @@ public class Player {
 		return _freeFolkTokens.remove(0);
 	}
 
+	public int getControlledCaseNumber() {
+		return _ownedCases.size();
+	}
 	/* === END (GET/SET)ERS === */
 
 	public void selectFolk(Folk f, int cost) {
@@ -98,10 +101,10 @@ public class Player {
 
 	public void freeTroops() {
 		for (Case c : _ownedCases.values()) {
-			FolkToken t = c.remOneFolkToken();
+			FolkToken t = c.removeOneFolkToken();
 			while (t != null) {
 				_freeFolkTokens.add(t);
-				t = c.remOneFolkToken();
+				t = c.removeOneFolkToken();
 			}
 		}
 	}
@@ -122,7 +125,7 @@ public class Player {
 		}
 		for (Case c : _ownedCases.values()) { // only one declining folk token
 												// remains
-			FolkToken t = c.remOneFolkToken();
+			FolkToken t = c.removeOneFolkToken();
 			t.toDecline();
 			c.flushToken();
 			c.addToken(t);
@@ -179,5 +182,17 @@ public class Player {
 	private void delControledCase(Case c) {
 		c.setOwner(null);
 		this._ownedCases.remove(c.getId());
+	}
+
+	public void setRedeploying() {
+		for(Case c : _ownedCases.values()) {
+			if(c.getFolkTokenNb()>1) {
+				_freeFolkTokens.addAll(c.getGarnison());
+			}
+		}
+	}
+	
+	public void addTokenToCase(int cId) {
+		_ownedCases.get(cId).addToken(_freeFolkTokens.remove(0));
 	}
 }

@@ -52,7 +52,6 @@ public class Controller {
 		Event ev = null;
 		m.newPlayer("Skia");
 		m.newPlayer("Gobelin");
-		m.nextPlayer();
 		v.refresh();
 		while(true) {
 			ev = v.popEvent();
@@ -61,81 +60,38 @@ public class Controller {
 			case NEWGAME:
 				m.initGame();
 				v.initBoard();
-				v.refresh();
 				break;
 			case NEWPLAYER:
 				m.newPlayer(ev.getString());
-				v.refresh();
 				break;
 			case REMOVEPLAYER:
 				m.delPlayer(ev.getInteger());
-				v.refresh();
 				break;
 			case SELECTFOLKPOWER:
 				m.selectActivePlayerFolk(ev.getInteger());
-				v.refresh();
+				break;
+			case ATTACKCASE:
+				m.attack(ev.getInteger());
+				break;
+			case REDEPLOY:
+				m.setRedeploying();
 				break;
 			case CLICKPOLY:
-				try {
-					m.getCurrentPlayer().attackCase(m.getMap().getCase(ev.getInteger()));
-				} catch (TooFewToken | Unreachable e) {
-					e.printStackTrace();
-				}
+				m.getCurrentPlayer().addTokenToCase(ev.getInteger());
+				break;
+			case FOLKTODECLINE:
+				m.playerToDeline();
 				m.nextPlayer();
-				v.refresh();
+				break;
+			case NEXTPLAYER:
+				m.getCurrentPlayer().harvestMoney();
+				m.nextPlayer();
 				break;
 			default:
 				break;
 			}
+			v.refresh();
 		}
-
-
-		/*
-		m.initGame();
-		m.newPlayer("Skia");
-		m.newPlayer("Gobelin");m.printAvailaibleFolk();
-
-		int i = 0;
-		while (true) {
-			if (i > 7)
-				break;
-			else
-				i++;
-
-			System.out.println("\nActive player: " + m.getCurrentPlayer());
-			if (!m.hasActivePlayerAnActiveFolk()) {
-				m.selectActivePlayerFolk((int) (Math.random() * 10) % 6);
-			} else if (m.getCurrentPlayer().getNbFreeToken() > 0){
-				while (true) {
-					Case r = m.getMap().getCase(0);
-					while (r.getId() < 29 && !m.getCurrentPlayer().canAttack(r)) {
-						r = m.getMap().getCase((r.getId() + 1));
-					}
-					System.out.println(m.getCurrentPlayer().getName()
-							+ " attacks case " + r.getId() + " that contains " +
-							r.getTokenNb() + " tokens");
-					try {
-						m.getCurrentPlayer().attackCase(r);
-					} catch (TooFewToken e) {
-						System.out.println("FAIL - TooFewToken");
-						e.printStackTrace();
-						break;
-					} catch (Unreachable e) {
-						System.out.println("FAIL - Unreachable");
-						e.printStackTrace();
-					}
-					if(m.getCurrentPlayer().getNbFreeToken() == 0)
-						break;
-				}
-			} else {
-				m.getCurrentPlayer().folkToDecline();
-			}
-			m.getCurrentPlayer().harvestMoney();
-			System.out.println("End of turn: "+m.getCurrentPlayer());
-			m.nextPlayer();
-		}
-		m.printAvailaibleFolk();
-		*/
 	}
 
 }
