@@ -49,9 +49,7 @@ public class View extends JFrame implements ActionListener, ComponentListener {
 	 *
 	 * @see View
 	 */
-	private HomeView _HomeView;;
-	//private PseudoPlayersView _PseudoPlayersView;
-	private RulesView _RulesView;
+	private ViewMenu _menu;
 	private MapGameView _MapGameView;
 
 	/**
@@ -59,8 +57,9 @@ public class View extends JFrame implements ActionListener, ComponentListener {
 	 *
 	 * @see View
 	 */
-	private JButton _backfromRulesButton;
+	private JButton _backButton;
 	private JButton _newButton, _loadButton, _rulesButton, _exitButton, _addButton, _removeButton ;
+
 
 
 	/**
@@ -69,101 +68,68 @@ public class View extends JFrame implements ActionListener, ComponentListener {
 	 * @param m The model used by the view
 	 */
 	public View(Model m) {
-
 		this.m = m;
 		this._eventStack = new ArrayList<>();
-		//Views
-		_HomeView = new HomeView();
-		_HomeView.addComponentListener(this);
-		_RulesView = new RulesView();
-		_RulesView.addComponentListener(this);
-		_MapGameView = new MapGameView(m, _eventStack);
-		_MapGameView.addComponentListener(this);
-
-
-		//Page de départ
-		this.setContentPane(_HomeView);
-		_HomeView.refresh(m.getPlayers(), getWidth(), getHeight());
-		//this.setContentPane(_PseudoPlayersView);
-		
-
-		//Récupération des boutons de retour
-		_backfromRulesButton = _RulesView.getBackButton();
-		_backfromRulesButton.addActionListener(this);
-
-		//Récupération du bouton de nouvelle partie
-		_newButton = _HomeView.getNewButton();
-		_newButton.addActionListener(this);
-
-		//Récupération du bouton de chargement d'une partie
-		_loadButton = _HomeView.getLoadButton();
-		_loadButton.addActionListener(this);
-
-		//Récupération du bouton des règles
-		_rulesButton = _HomeView.getRulesButton();
-		_rulesButton.addActionListener(this);
-
-		//Récupération du bouton exit
-		_exitButton = _HomeView.getExitButton();
-		_exitButton.addActionListener(this);
-
-		//Récupération du bouton exit
-		_exitButton = _HomeView.getExitButton();
-		_exitButton.addActionListener(this);
-
-		_addButton = _HomeView.getAddButton();
-		_addButton.addActionListener(this);
-
-		_removeButton = _HomeView.getDelButton();
-		_removeButton.addActionListener(this);
-
-		//Récupération du bouton OK dans le menu de creation des profils joueurs
-		//_okButton = _PseudoPlayersView.getOkButton();
-		//_okButton.addActionListener(this);
-
-		//Récupération du bouton Add dans le menu de creation des profils joueurs
-		//_addButton = _PseudoPlayersView.getAddButton();
-		//_addButton.addActionListener(this);
-
-		//Récupération du bouton Add dans le menu de creation des profils joueurs
-		//_removeButton = _PseudoPlayersView.getRemoveButton();
-		//_removeButton.addActionListener(this);
-
 
 		//Paramètre de base
 		this.setTitle("Smallworld UTBM");
 		//this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setMinimumSize(new Dimension(600, 480));
 		this.setResizable(true);
-		this.setSize(getWidth(), getHeight());
 		this.setVisible(true);
+		
+		//Views
+		_menu = new ViewMenu(getWidth(), getHeight(), m);
+		_menu.addComponentListener(this);
+		_MapGameView = new MapGameView(getWidth(), getHeight(), m, _eventStack);
+		_MapGameView.addComponentListener(this);
 
-	}
+		//Récupération des boutons de retour
+		_backButton = _menu.getBackButton();
+		_backButton.addActionListener(this);
 
-	public HomeView getHomeView() {
-		return _HomeView;
-	}
+		//Récupération du bouton de nouvelle partie
+		_newButton = _menu.getNewButton();
+		_newButton.addActionListener(this);
 
-	//public PseudoPlayersView getPseudoPlayersView() {
-	//	return _PseudoPlayersView;
-	//}
+		//Récupération du bouton de chargement d'une partie
+		_loadButton = _menu.getLoadButton();
+		_loadButton.addActionListener(this);
 
-	public RulesView getRulesView() {
-		return _RulesView;
-	}
+		//Récupération du bouton des règles
+		_rulesButton = _menu.getRulesButton();
+		_rulesButton.addActionListener(this);
 
-	static public Dimension getFrameSize() {
-		Dimension frameSize = new Dimension(900,600);
-		return frameSize;
+		//Récupération du bouton exit
+		_exitButton = _menu.getExitButton();
+		_exitButton.addActionListener(this);
+
+		//Récupération du bouton exit
+		_exitButton = _menu.getExitButton();
+		_exitButton.addActionListener(this);
+
+		_addButton = _menu.getAddButton();
+		_addButton.addActionListener(this);
+
+		_removeButton = _menu.getDelButton();
+		_removeButton.addActionListener(this);
+
+		
+		//Page de départ
+		this.setContentPane(_menu);
+		_menu.refresh(getWidth(), getHeight());
+		_menu.seeMenu();
+
+		this.pack();
+
 	}
 
 	@Override
 	public synchronized void actionPerformed(ActionEvent e) {
 		if (e.getSource().equals(_rulesButton))
 		{
-			this.setContentPane(_RulesView);
-			_RulesView.requestFocus();
-			this.setVisible(true);
+			_menu.seeRules();
 			refresh();
 		}
 		else if (e.getSource().equals(_exitButton))
@@ -173,9 +139,9 @@ public class View extends JFrame implements ActionListener, ComponentListener {
 				System.exit(0);
 			}
 		}
-		else if (e.getSource().equals(_backfromRulesButton))
+		else if (e.getSource().equals(_backButton))
 		{
-			this.setContentPane(_HomeView);
+			_menu.seeMenu();
 			refresh();
 		}
 		else if (e.getSource().equals(_newButton))
@@ -244,10 +210,8 @@ public class View extends JFrame implements ActionListener, ComponentListener {
 
 	public void refresh() {
 		System.out.println("Refreshing...");
-		if(this.getContentPane() == _HomeView)
-			_HomeView.refresh(m.getPlayers(), getWidth(), getHeight());
-		else if(this.getContentPane() == _RulesView)
-			_RulesView.refresh(getWidth(), getHeight());
+		if(this.getContentPane() == _menu)
+			_menu.refresh(getWidth(), getHeight());
 		else if (this.getContentPane() == _MapGameView)
 			_MapGameView.refresh(this.getWidth(), this.getHeight());
 	}
@@ -258,15 +222,17 @@ public class View extends JFrame implements ActionListener, ComponentListener {
 
 	@Override
 	public void componentMoved(ComponentEvent e) {
+		refresh();
 	}
 
 	@Override
 	public void componentResized(ComponentEvent e) {
-			refresh();		
+		refresh();		
 	}
 
 	@Override
 	public void componentShown(ComponentEvent e) {		
+		refresh();		
 	}
 }
 

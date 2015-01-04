@@ -28,8 +28,8 @@ import model.Model;
 public class MapGameView extends JPanel {
 	private static final long serialVersionUID = 1L;
 	//Dimension
-	int frameWidth = View.getFrameSize().width;
-	int frameHeight = View.getFrameSize().height;
+	int frameWidth;
+	int frameHeight;
 
     private Model _m;
 
@@ -62,7 +62,9 @@ public class MapGameView extends JPanel {
 	 * @param id
 	 *
 	 */
-	MapGameView(Model m, ArrayList<Event> queue){
+	MapGameView(int w, int h, Model m, ArrayList<Event> queue){
+		this.frameWidth = w;
+		this.frameHeight = h;
 		this._m = m;
 		this._queue = queue;
 		this.setSize(frameWidth, frameHeight);
