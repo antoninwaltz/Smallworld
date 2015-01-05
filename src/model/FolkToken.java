@@ -1,14 +1,17 @@
 package model;
 
 public class FolkToken extends Token {
-	private String _name;
+	private FolkType _type;
 	private boolean _declining;
 
-
-	public FolkToken(int id, String n) {
+	public FolkToken(int id, FolkType t) {
 		super(id);
 		this._declining = false;
-		this._name = n+id;
+		this._type = t;
+	}
+	
+	public FolkType getType() {
+		return _type;
 	}
 	
 	public boolean isDeclining() {

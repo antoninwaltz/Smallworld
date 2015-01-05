@@ -68,6 +68,7 @@ public class Map {
 			this.newEdge(4, 11);
 			this.newEdge(4, 4000);
 			this.newEdge(5, 6);
+			this.newEdge(5, 11);
 			this.newEdge(5, 4000);
 			this.newEdge(6, 11);
 			this.newEdge(6, 16);
@@ -143,5 +144,10 @@ public class Map {
 	
 	public Case getCase(int caseId) {
 		return this._map.get(caseId);
+	}
+
+	public void clear() {
+		for (Case c : _map.values())
+			c.free();
 	}
 }

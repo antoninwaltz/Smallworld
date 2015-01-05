@@ -60,6 +60,8 @@ public class View extends JFrame implements ActionListener, ComponentListener {
 	private JButton _backButton;
 	private JButton _newButton, _loadButton, _rulesButton, _exitButton, _addButton, _removeButton ;
 
+	private JButton _quitGame;
+
 
 
 	/**
@@ -115,6 +117,8 @@ public class View extends JFrame implements ActionListener, ComponentListener {
 		_removeButton = _menu.getDelButton();
 		_removeButton.addActionListener(this);
 
+		_quitGame = _MapGameView.getQuitButton();
+		_quitGame.addActionListener(this);
 		
 		//Page de départ
 		this.setContentPane(_menu);
@@ -139,8 +143,11 @@ public class View extends JFrame implements ActionListener, ComponentListener {
 				System.exit(0);
 			}
 		}
-		else if (e.getSource().equals(_backButton))
+		else if (e.getSource() == _backButton || e.getSource() == _quitGame)
 		{
+			System.out.println("TROLL");
+			if (getContentPane() == _MapGameView)
+				setContentPane(_menu);
 			_menu.seeMenu();
 			refresh();
 		}

@@ -58,6 +58,7 @@ public class Controller {
 			if(ev==null) continue;
 			switch (ev.getEventType()) {
 			case NEWGAME:
+				m.quitGame();
 				m.initGame();
 				v.initBoard();
 				break;
@@ -86,6 +87,7 @@ public class Controller {
 			case NEXTPLAYER:
 				m.getCurrentPlayer().harvestMoney();
 				m.nextPlayer();
+				m.harvestTroups();
 				break;
 			default:
 				break;

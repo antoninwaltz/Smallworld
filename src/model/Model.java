@@ -1,7 +1,10 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
+import java.util.Random;
 
 import modelExceptions.TooFewToken;
 import modelExceptions.Unreachable;
@@ -34,9 +37,6 @@ public class Model {
 		this._folkQueue = new ArrayList<Folk>();
 		this._powerQueue = new ArrayList<Power>();
 		this._availableFolk = new LinkedList<Folk>();
-		this.initFolk();
-		this.initPower();
-		this.initAvailableFolk();
 	}
 
 	public Map getMap() {
@@ -83,23 +83,38 @@ public class Model {
 		return hasActivePlayerAnActiveFolk() && _activePlayer.getControlledCaseNumber()>0;
 	}
 //===========================================================================//
+	public void quitGame() {
+		this._folkQueue.clear();
+		this._powerQueue.clear();
+		this._availableFolk.clear();
+		for (Player p : _players)
+			p.clear();
+		if (_map != null)
+			_map.clear();
+	}
 	public void initGame() {
 		_activePlayer = _players.get(0);
 		initMap();
+		this.initFolk();
+		this.initPower();
+		this.initAvailableFolk();
 	}
 	
 	public void initFolk() {
 		System.out.print("Initializing folks... ");
-		_folkQueue.add(new Folk("INFO", 5));
-		_folkQueue.add(new Folk("MC", 4));
-		_folkQueue.add(new Folk("EDIM", 5));
-		_folkQueue.add(new Folk("EE", 6));
-		_folkQueue.add(new Folk("IMSI", 7));
-		_folkQueue.add(new Folk("PROFESSEURS", 5));
-		_folkQueue.add(new Folk("CHERCHEURS", 5));
-		_folkQueue.add(new Folk("DOCTORANTS", 5));
-		_folkQueue.add(new Folk("ADMINISTRATIFS", 5));
-		_folkQueue.add(new Folk("TC", 4));
+		_folkQueue.add(new Folk(FolkType.INFO, 5));
+		_folkQueue.add(new Folk(FolkType.MC, 4));
+		_folkQueue.add(new Folk(FolkType.EDIM, 5));
+		_folkQueue.add(new Folk(FolkType.EE, 6));
+		_folkQueue.add(new Folk(FolkType.IMSI, 7));
+		_folkQueue.add(new Folk(FolkType.PROFESSEURS, 5));
+		_folkQueue.add(new Folk(FolkType.CHERCHEURS, 5));
+		_folkQueue.add(new Folk(FolkType.DOCTORANTS, 5));
+		_folkQueue.add(new Folk(FolkType.ADMINISTRATIFS, 5));
+		_folkQueue.add(new Folk(FolkType.TC, 4));
+		_folkQueue.add(new Folk(FolkType.PERSONNEL, 5));
+		_folkQueue.add(new Folk(FolkType.APPRENTIS, 5));
+		Collections.shuffle(_folkQueue);
 		System.out.println("OK");
 	}
 
@@ -114,6 +129,7 @@ public class Model {
 		_powerQueue.add(new Power(PowerType.BOSSEURS, 5));
 		_powerQueue.add(new Power(PowerType.SPORTIFS, 3));
 		_powerQueue.add(new Power(PowerType.LITTERAIRES, 4));
+		Collections.shuffle(_powerQueue);
 		System.out.println("OK");
 	}
 
@@ -133,7 +149,7 @@ public class Model {
 
 	public void initMap() {
 		System.out.println("Initializing the map...");
-		if (_players.size() == 2 || _players.size() == 3) {
+		if (_players.size() <= 12) { //TODO make big map
 			this._map = new Map(MapType.SMALL);
 		} else {
 			this._map = new Map(MapType.BIG);
@@ -183,20 +199,30 @@ public class Model {
 	public void nextPlayer() {
 		_redeploying = false;
 		_canDecline = true;
+		_activePlayer.flushFreeToken();
 		_playerIndex++;
 		_playerIndex %= _players.size();
 		_activePlayer = _players.get(_playerIndex);
 	}
 	
 	public void playerToDeline() {
-		_activePlayer.folkToDecline();
+		System.out.println(_folkQueue);
+		Folk old = _activePlayer.folkToDecline();
+		if(old != null)
+			_folkQueue.add(old);
+		System.out.println(_folkQueue);
+	}
+	
+	public void harvestTroups() {
+		if (hasActivePlayerAnActiveFolk())
+			_activePlayer.harvestActiveTroups();
 	}
 
 	public void setRedeploying() {
 		System.out.print("Redeploying... ");
 		_canDecline = false;
 		_redeploying = true;
-		_activePlayer.setRedeploying();
+		harvestTroups();
 		System.out.println("OK");
 	}
 

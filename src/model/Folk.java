@@ -8,21 +8,21 @@ public class Folk {
 	private int _initialTokenNb;
 	private ArrayList<FolkToken> _token;
 	private Power _power;
-	private String _name;
+	private FolkType _type;
 	
-	public Folk (String name, int tNb) {
-		this._name = name;
+	public Folk (FolkType type, int tNb) {
+		this._type = type;
 		this._token = new ArrayList<FolkToken>();
 		this._initialTokenNb = tNb;
 	}
 
 	@Override
 	public String toString() {
-		return _name + "-" + _power;
+		return _type + "-" + _power;
 	}
 	
-	public String getName() {
-		return _name;
+	public FolkType getName() {
+		return _type;
 	}
 	
 	public Power getPower() {
@@ -39,7 +39,6 @@ public class Folk {
 	
 	public void setPower(Power p) {
 		this._power = p;
-		this._initialTokenNb += p.getInitialToken();
 	}
 	
 	public int getValue() {
@@ -55,8 +54,8 @@ public class Folk {
 	}
 
 	public void generateFolkTokens() {
-		for(int i=0;i<_initialTokenNb;i++) {
-			_token.add(new FolkToken(i, _name+i));
+		for(int i=0;i<(_initialTokenNb+_power.getInitialToken());i++) {
+			_token.add(new FolkToken(i, _type));
 		}
 	}
 

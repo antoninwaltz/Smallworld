@@ -11,6 +11,7 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import model.Folk;
@@ -41,10 +42,11 @@ public class MapGameView extends JPanel {
 	private ArrayList<Rectangle> _folkList;
 	private Rectangle _nextButton;
 	private Rectangle _redeploy;
-
-	private ArrayList<MouseListener> mouseEvent = new ArrayList<>();
 	private Rectangle _toDeline;
 
+	private ArrayList<MouseListener> mouseEvent = new ArrayList<>();
+
+	private JButton _quitGame;
 
 	// Workaround for non constant window size
 	private int[] computeX(int[] x) {
@@ -91,6 +93,12 @@ public class MapGameView extends JPanel {
 		_folkList = new ArrayList<>();
 		setFocusable(true);
 		setDoubleBuffered(true);
+		_quitGame = new JButton("Stopper la partie");
+		_quitGame.setSize(200, 30);
+	}
+	
+	public JButton getQuitButton() {
+		return _quitGame;
 	}
 
 	//===========Add every shape here, index ordered===========================
@@ -111,7 +119,8 @@ public class MapGameView extends JPanel {
 			g.fillPolygon(_polygonList.get(i));
 			// ---TokenNumber--- //
 			g.setColor(new Color(0, 0, 0));
-			g.drawString(_m.getMap().getCase(i).getTokenNb()+"",
+			if (_m.getMap().getCase(i).getTokenNb()!=0)
+				g.drawString(_m.getMap().getCase(i).getTokenNb()+"",
 					getBarycenterX(i),
 					getBarycenterY(i));
 		}
@@ -148,6 +157,7 @@ public class MapGameView extends JPanel {
 				(int)(0.96*frameHeight));
 		// ---Folk--- //
 		g.setColor(Color.GREEN);
+		g.setFont(new Font("Helvetica", Font.BOLD, (int)(0.02*frameWidth)));
 		String f = (_m.getCurrentPlayer().getCurrentFolk() != null) ? 
 				_m.getCurrentPlayer().getCurrentFolk().toString() : 
 				"Pas de peuple";
@@ -203,6 +213,7 @@ public class MapGameView extends JPanel {
 		else
 			g.setColor(Color.GRAY);
 		g.drawString("Passer en declin", x, y);
+		
 	}
 
 	public void drawBoard() {
@@ -375,7 +386,8 @@ public class MapGameView extends JPanel {
 								mod.getCurrentPlayer().getNbFreeToken()>0) {
 							_queue.add(new Event(EventType.CLICKPOLY, polId));
 						}
-						else if(mod.getCurrentPlayer().canAttack(mod.getMap().getCase(polId))) {
+						else if(mod.getCurrentPlayer().canAttack(mod.getMap().getCase(polId)) &&
+								!mod.isRedeploying()) {
 							_queue.add(new Event(EventType.ATTACKCASE, polId));
 						}
 					}
@@ -422,6 +434,7 @@ public class MapGameView extends JPanel {
 		for(MouseListener m1 : mouseEvent) {
 			this.addMouseListener(m1);
 		}
+		_quitGame.setLocation(frameWidth-210, 10);
 	}
 
 	public void refresh(int w, int h) {
@@ -431,5 +444,6 @@ public class MapGameView extends JPanel {
 			drawBoard();
 		}
 		repaint();
+		this.add(_quitGame);
 	}
 }

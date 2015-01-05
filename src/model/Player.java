@@ -63,6 +63,10 @@ public class Player {
 		return _freeFolkTokens.remove(0);
 	}
 
+	public void flushFreeToken() {
+		_freeFolkTokens.clear();
+	}
+	
 	public int getControlledCaseNumber() {
 		return _ownedCases.size();
 	}
@@ -115,8 +119,9 @@ public class Player {
 		earnGold(count);
 	}
 
-	public void folkToDecline() {
+	public Folk folkToDecline() {
 		System.out.print(_currentFolk + " getting into decline...");
+		Folk old = _decliningFolk;
 		this._currentFolk.toDecline();
 		this._decliningFolk = _currentFolk;
 		_currentFolk = null;
@@ -132,7 +137,9 @@ public class Player {
 		}
 		_declinedCases = _ownedCases;
 		_ownedCases = new HashMap<Integer, Case>();
+		_freeFolkTokens.clear();
 		System.out.println("OK");
+		return old;
 	}
 
 	public void earnGold(int q) {
@@ -184,7 +191,7 @@ public class Player {
 		this._ownedCases.remove(c.getId());
 	}
 
-	public void setRedeploying() {
+	public void harvestActiveTroups() {
 		for(Case c : _ownedCases.values()) {
 			if(c.getFolkTokenNb()>1) {
 				_freeFolkTokens.addAll(c.getGarnison());
@@ -194,5 +201,15 @@ public class Player {
 	
 	public void addTokenToCase(int cId) {
 		_ownedCases.get(cId).addToken(_freeFolkTokens.remove(0));
+	}
+
+	public void clear() {
+		// TODO Auto-generated method stub
+		_currentFolk = null;
+		_decliningFolk = null;
+		_money = 5;
+		_freeFolkTokens.clear();
+		this._ownedCases.clear();
+		this._declinedCases.clear();
 	}
 }

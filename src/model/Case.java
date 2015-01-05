@@ -105,6 +105,9 @@ public class Case {
 		_tokens.clear();
 		_tokenNb = 0;
 	}
-
 	
+	public void free() {
+		flushToken();
+		_owner = null;
+	}
 }

@@ -1,0 +1,17 @@
+package model;
+
+
+public enum FolkType {
+	INFO,
+	MC,
+	EDIM,
+	EE,
+	IMSI,
+	PROFESSEURS,
+	CHERCHEURS,
+	DOCTORANTS,
+	ADMINISTRATIFS,
+	TC,
+	PERSONNEL,
+	APPRENTIS
+}
