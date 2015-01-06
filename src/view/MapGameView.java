@@ -126,14 +126,14 @@ public class MapGameView extends JPanel {
 		}
 		//====FOLK-STACK====//
 		g.setFont(new Font("Helvetica", Font.BOLD, (int)(0.015*frameWidth)));
-		for(int i = 0; i < 6; i++){
+		for(int i = 0; i < 5; i++){
 			//BACKGROUND
 			x = (int)_folkList.get(i).getX();
 			y = (int)_folkList.get(i).getY();
 			w = (int)_folkList.get(i).getWidth();
 			h = (int)_folkList.get(i).getHeight();
 			g.setColor(new Color(0, 0, 255));
-			g.fillRect(x, y, w, h);
+			//g.fillRect(x, y, w, h);
 			//TEXT
 			g.setColor(Color.BLACK);
 			x += 10; 
