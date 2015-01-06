@@ -132,9 +132,11 @@ public class Player implements Serializable {
 		for (Case c : _ownedCases.values()) { // only one declining folk token
 												// remains
 			FolkToken t = c.removeOneFolkToken();
-			t.toDecline();
+			if (t != null)
+				t.toDecline();
 			c.flushToken();
-			c.addToken(t);
+			if (t != null)
+				c.addToken(t);
 		}
 		_declinedCases = _ownedCases;
 		_ownedCases = new HashMap<Integer, Case>();

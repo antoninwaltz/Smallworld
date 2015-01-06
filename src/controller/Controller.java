@@ -102,13 +102,21 @@ public class Controller extends Thread {
 				m.harvestTroups();
 				break;
 			case SAVE:
-				save(ev.getString());
+				try {
+					save(ev.getString());
+				} catch (IOException e) {
+					System.err.println(e.getMessage());
+				}
 				break;
 			case LOAD:
-				load(ev.getString());
-				v.setModel(m);
-				System.out.println("Game loaded");
-				v.initBoard();
+				try {
+					load(ev.getString());
+					v.setModel(m);
+					System.out.println("Game loaded");
+					v.initBoard();
+				} catch (ClassNotFoundException | IOException e) {
+					System.err.println(e.getMessage());
+				}
 				break;
 			default:
 				break;
@@ -121,41 +129,24 @@ public class Controller extends Thread {
 	}
 	
 	//===================================================================
-	public void save(String string) {
+	public void save(String string) throws IOException {
 		FileOutputStream f = null;
 		ObjectOutputStream s = null;
-		try {
-			f = new FileOutputStream(string);
-			s = new ObjectOutputStream(f);
-			s.writeObject(m);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				f.close();
-				s.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
+		f = new FileOutputStream(string);
+		s = new ObjectOutputStream(f);
+		s.writeObject(m);
+		f.close();
+		s.close();
 	}
 
-	public void load(String string) {
+	public void load(String string) throws IOException, ClassNotFoundException {
 		FileInputStream f = null;
 		ObjectInputStream s = null;
-		try {
-			f = new FileInputStream(string);
-			s = new ObjectInputStream(f);
-			m = (Model) s.readObject();
-		} catch (IOException | ClassNotFoundException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				f.close();
-				s.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
+		f = new FileInputStream(string);
+		s = new ObjectInputStream(f);
+		m = (Model) s.readObject();
+		f.close();
+		s.close();
+
 	}
 }

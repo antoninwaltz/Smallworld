@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 
+import javax.print.attribute.standard.Finishings;
+
 import modelExceptions.TooFewToken;
 import modelExceptions.Unreachable;
 
@@ -28,6 +30,7 @@ public class Model implements Serializable {
 	private boolean _canDecline;
 	private int _turnCounter;
 	private boolean _finished;
+	private Player _winner;
 
 	/**
 	 * <b>Constructor of the model</b> It only build the attributes
@@ -87,6 +90,18 @@ public class Model implements Serializable {
 	public boolean canRedeploy() {
 		return hasActivePlayerAnActiveFolk() && _activePlayer.getControlledCaseNumber()>0;
 	}
+	
+	public int getTurn() {
+		return _turnCounter;
+	}
+	
+	public boolean isFinished() {
+		return _finished;
+	}
+	
+	public Player getWinner() {
+		return _winner;
+	}
 //===========================================================================//
 	public void quitGame() {
 		this._folkQueue.clear();
@@ -97,12 +112,15 @@ public class Model implements Serializable {
 		if (_map != null)
 			_map.clear();
 	}
+	
 	public void initGame() {
 		_activePlayer = _players.get(0);
 		initMap();
 		this.initFolk();
 		this.initPower();
 		this.initAvailableFolk();
+		_finished = false;
+		_winner = null;
 	}
 	
 	public void initFolk() {
@@ -221,6 +239,13 @@ public class Model implements Serializable {
 
 	private void endGame() {
 		_finished = true;
+		int max = 0;
+		for (Player p : _players) {
+			if (max <= p.getMoney()) {
+				max = p.getMoney();
+				_winner = p;
+			}
+		}
 	}
 
 	public void playerToDeline() {

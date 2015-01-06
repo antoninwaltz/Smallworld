@@ -13,8 +13,8 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import controller.Controller;
 import model.Model;
+import controller.Controller;
 
 /**
  * <b>The View class</b>
@@ -142,6 +142,7 @@ public class View extends JFrame implements ActionListener, ComponentListener {
 		{
 			_menu.seeRules();
 			refresh();
+			return; // Dont go to sleep
 		}
 		else if (e.getSource().equals(_exitButton))
 		{
@@ -156,6 +157,7 @@ public class View extends JFrame implements ActionListener, ComponentListener {
 				setContentPane(_menu);
 			_menu.seeMenu();
 			refresh();
+			return; // Dont go to sleep
 		}
 		else if (e.getSource().equals(_newButton))
 		{
@@ -219,7 +221,6 @@ public class View extends JFrame implements ActionListener, ComponentListener {
 			Event ev = new Event(EventType.LOAD, filename);
 			this._eventStack.add(ev);
 		}
-		//_c.notifyAll();
 		synchronized (_c) {
 			_c.notify();
 		}

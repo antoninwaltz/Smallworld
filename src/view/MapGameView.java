@@ -14,9 +14,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import controller.Controller;
 import model.Model;
 import model.Player;
+import controller.Controller;
 
 
 /**
@@ -49,6 +49,7 @@ public class MapGameView extends JPanel {
 	private ArrayList<MouseListener> mouseEvent = new ArrayList<>();
 
 	private JButton _quitGame, _saveButton;
+	private Rectangle _winPanel;
 
 	// Workaround for non constant window size
 	private int[] computeX(int[] x) {
@@ -173,7 +174,7 @@ public class MapGameView extends JPanel {
 			y = (int)_folkList.get(i).getY();
 			w = (int)_folkList.get(i).getWidth();
 			h = (int)_folkList.get(i).getHeight();
-			g.setColor(new Color(0, 0, 255));
+			g.setColor(new Color(130, 70, 0));
 			g.fillRect(x, y, w, h);
 			//TEXT
 			g.setColor(Color.BLACK);
@@ -183,6 +184,10 @@ public class MapGameView extends JPanel {
 						 _m.getAvailableFolks().get(i).getInitialTokNb(), x, y);
 			g.drawString(_m.getAvailableFolks().get(i).getPower()+" "+
 						 _m.getAvailableFolks().get(i).getPower().getInitialToken(), x, y+20);
+			g.setFont(new Font("Helvetica", Font.BOLD, (int)(0.02*frameWidth)));
+			g.setColor(Color.YELLOW);
+			g.drawString(_m.getAvailableFolks().get(i).getValue()+"", x+30, y+45);
+
 		}
 		//====PLAYER-INFO====//
 		// ---Name--- //
@@ -254,6 +259,38 @@ public class MapGameView extends JPanel {
 		else
 			g.setColor(Color.GRAY);
 		g.drawString("Passer en declin", x, y);
+		//====TURN====//
+		x = (int)(0.03*frameWidth);
+		y = (int)(0.05*frameHeight);
+		g.setColor(Color.LIGHT_GRAY);
+		g.setFont(new Font("Helvetica", Font.BOLD, (int)(0.04*frameWidth)));
+		g.drawString(_m.getTurn()+"", x, y);
+		//====WINNER====//
+		if(_m.isFinished()) {
+			g.setColor(Color.LIGHT_GRAY);
+			x = (int)_winPanel.getX();
+			y = (int)_winPanel.getY();
+			w = (int)_winPanel.getWidth();
+			h = (int)_winPanel.getHeight();
+			g.fillRect(x, y, w, h);
+			g.setColor(Color.BLACK);
+			g.drawString("The winner is "+_m.getWinner().getName(), 
+					(int)(0.27*frameWidth), 
+					(int)(0.3*frameHeight));
+			g.drawString("with "+_m.getWinner().getMoney()+" golds!", 
+					(int)(0.3*frameWidth), 
+					(int)(0.35*frameHeight));
+			g.setFont(new Font("Helvetica", Font.BOLD, (int)(0.038*frameWidth)));
+			i = 0;
+			for (Player p : _m.getPlayers()) {
+				if (p != _m.getWinner()) {
+					System.out.println("- "+p.getName()+" with "+p.getMoney());
+					g.drawString(" - "+p.getName()+" with "+p.getMoney(), 
+						(int)(0.25*frameWidth), 
+						(int)(i++*0.05*frameHeight+0.5*frameHeight));
+				}
+			}
+		}
 		
 	}
 
@@ -412,6 +449,11 @@ public class MapGameView extends JPanel {
 
 		_quitGame.setLocation(frameWidth-180, 10);
 		_saveButton.setLocation(frameWidth-340, 10);
+		
+		_winPanel = new Rectangle((int)(0.2*frameWidth),
+				(int)(0.2*frameHeight),
+				(int)(0.6*frameWidth),
+				(int)(0.6*frameHeight));
 
 		//LISTENERS------------------------------------------------------------------------------------------
 
@@ -422,17 +464,16 @@ public class MapGameView extends JPanel {
 		//====Polys====//
 		for(int i=0; i<x.length; i++){
 			final int polId = i;
-			final Model mod = _m;
 			mouseEvent.add(new MouseAdapter() {
 				public synchronized void mouseClicked(MouseEvent me) {
-					if (_polygonList.get(polId).contains(me.getPoint())) {
-						if(mod.isOwner(polId) && 
-								mod.isRedeploying() && 
-								mod.getCurrentPlayer().getNbFreeToken()>0) {
+					if (!_m.isFinished() && _polygonList.get(polId).contains(me.getPoint())) {
+						if(_m.isOwner(polId) && 
+								_m.isRedeploying() && 
+								_m.getCurrentPlayer().getNbFreeToken()>0) {
 							_queue.add(new Event(EventType.CLICKPOLY, polId));
 						}
-						else if(mod.getCurrentPlayer().canAttack(mod.getMap().getCase(polId)) &&
-								!mod.isRedeploying()) {
+						else if(_m.getCurrentPlayer().canAttack(_m.getMap().getCase(polId)) &&
+								!_m.isRedeploying()) {
 							_queue.add(new Event(EventType.ATTACKCASE, polId));
 						}
 						synchronized (_c) {
@@ -446,15 +487,14 @@ public class MapGameView extends JPanel {
 		//====FolkStack====//
 		for(int i=0; i<6; i++){
 			final int folkId = i;
-			final Model mod = _m;
 			mouseEvent.add(new MouseAdapter() {
 				public synchronized void mouseClicked(MouseEvent me) {
-					if (_folkList.get(folkId).contains(me.getPoint()) &&
-							!mod.hasActivePlayerAnActiveFolk()) {
+					if (!_m.isFinished() && _folkList.get(folkId).contains(me.getPoint()) &&
+							!_m.hasActivePlayerAnActiveFolk()) {
 						_queue.add(new Event(EventType.SELECTFOLKPOWER, folkId));
-					}
-					synchronized (_c) {
-						_c.notify();
+						synchronized (_c) {
+							_c.notify();
+						}
 					}
 				};
 			});
@@ -462,32 +502,32 @@ public class MapGameView extends JPanel {
 		//====ActionButtons====//
 		mouseEvent.add(new MouseAdapter() {
 			public synchronized void mouseClicked(MouseEvent me) {
-				if (_nextButton.contains(me.getPoint()) &&
+				if (!_m.isFinished() && _nextButton.contains(me.getPoint()) &&
 						_m.getCurrentPlayer().getNbFreeToken() == 0) {
 					_queue.add(new Event(EventType.NEXTPLAYER));
-				}
-				synchronized (_c) {
-					_c.notify();
+					synchronized (_c) {
+						_c.notify();
+					}
 				}
 			};
 		});
 		mouseEvent.add(new MouseAdapter() {
 			public synchronized void mouseClicked(MouseEvent me) {
-				if (_redeploy.contains(me.getPoint())) {
+				if (!_m.isFinished() && _redeploy.contains(me.getPoint())) {
 					_queue.add(new Event(EventType.REDEPLOY));
-				}
-				synchronized (_c) {
-					_c.notify();
+					synchronized (_c) {
+						_c.notify();
+					}
 				}
 			};
 		});
 		mouseEvent.add(new MouseAdapter() {
 			public synchronized void mouseClicked(MouseEvent me) {
-				if (_toDeline.contains(me.getPoint()) && _m.canDeline()) {
+				if (!_m.isFinished() && _toDeline.contains(me.getPoint()) && _m.canDeline()) {
 					_queue.add(new Event(EventType.FOLKTODECLINE));
-				}
-				synchronized (_c) {
-					_c.notify();
+					synchronized (_c) {
+						_c.notify();
+					}
 				}
 			};
 		});
