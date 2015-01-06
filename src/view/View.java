@@ -159,8 +159,6 @@ public class View extends JFrame implements ActionListener, ComponentListener {
 			} else {
 				Event _newGame = new Event(EventType.NEWGAME);
 				this._eventStack.add(_newGame);
-
-				System.out.println(this._eventStack.get(0).getEventType());
 			}
 		}
 		else if (e.getSource().equals(_addButton))
@@ -168,16 +166,14 @@ public class View extends JFrame implements ActionListener, ComponentListener {
 			if(m.getPlayers().size() >= 6) {
 				JOptionPane.showMessageDialog(this, "Too much players");
 			} else {
-				String  name = null;
-				while(name==null)
-					name = (String)javax.swing.JOptionPane.showInputDialog(this,
+				String  name = (String)javax.swing.JOptionPane.showInputDialog(this,
 						"Enter your name:",
 						"Name",
 						JOptionPane.PLAIN_MESSAGE);
-				Event ev = new Event(EventType.NEWPLAYER, name);
-				this._eventStack.add(ev);
-
-				System.out.println(this._eventStack.get(0).getEventType() + " "+name);
+				if (name != null && !name.equals("")) {
+					Event ev = new Event(EventType.NEWPLAYER, name);
+					this._eventStack.add(ev);
+				}
 			}
 		}
 		else if (e.getSource().equals(_removeButton))
@@ -196,8 +192,6 @@ public class View extends JFrame implements ActionListener, ComponentListener {
 					int id = s.toCharArray()[0]-'0';
 					Event ev = new Event(EventType.REMOVEPLAYER, id);
 					this._eventStack.add(ev);
-
-					System.out.println(this._eventStack.get(0).getEventType() + " "+id);
 				}
 			}
 		}

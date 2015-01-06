@@ -95,6 +95,7 @@ public class MapGameView extends JPanel {
 		setDoubleBuffered(true);
 		_quitGame = new JButton("Stopper la partie");
 		_quitGame.setSize(200, 30);
+		this.add(_quitGame);
 	}
 	
 	public JButton getQuitButton() {
@@ -434,7 +435,6 @@ public class MapGameView extends JPanel {
 		for(MouseListener m1 : mouseEvent) {
 			this.addMouseListener(m1);
 		}
-		_quitGame.setLocation(frameWidth-210, 10);
 	}
 
 	public void refresh(int w, int h) {
@@ -443,7 +443,7 @@ public class MapGameView extends JPanel {
 			frameHeight = h;
 			drawBoard();
 		}
+		_quitGame.setLocation(frameWidth-210, 10);
 		repaint();
-		this.add(_quitGame);
 	}
 }
