@@ -1,5 +1,11 @@
 package controller;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 import model.Model;
 import modelExceptions.TooFewToken;
 import modelExceptions.Unreachable;
@@ -52,6 +58,10 @@ public class Controller {
 		Event ev = null;
 		m.newPlayer("Skia");
 		m.newPlayer("Gobelin");
+		m.newPlayer("Swag");
+		m.newPlayer("Bite");
+		m.newPlayer("Pate");
+		m.newPlayer("Troll");
 		v.refresh();
 		while(true) {
 			ev = v.popEvent();
@@ -89,11 +99,56 @@ public class Controller {
 				m.nextPlayer();
 				m.harvestTroups();
 				break;
+			case SAVE:
+				save(ev.getString());
+				break;
+			case LOAD:
+				load(ev.getString());
+				v.refresh();
+				break;
 			default:
 				break;
 			}
 			v.refresh();
 		}
 	}
+	
+	//===================================================================
+	public void save(String string) {
+		FileOutputStream f = null;
+		ObjectOutputStream s = null;
+		try {
+			f = new FileOutputStream(string);
+			s = new ObjectOutputStream(f);
+			s.writeObject(m);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				f.close();
+				s.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 
+	public void load(String string) {
+		FileInputStream f = null;
+		ObjectInputStream s = null;
+		try {
+			f = new FileInputStream(string);
+			s = new ObjectInputStream(f);
+			m = (Model) s.readObject();
+		} catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				f.close();
+				s.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 }

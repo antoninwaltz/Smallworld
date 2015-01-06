@@ -1,10 +1,11 @@
 package model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 
-public class Case {
+public class Case implements Serializable {
 	private int _id;
 	private HashMap<Integer,Case> _neighbours;
 	private Player _owner;
@@ -109,5 +110,12 @@ public class Case {
 	public void free() {
 		flushToken();
 		_owner = null;
+	}
+
+	public FolkType getFolkType() {
+		for (Token t : _tokens)
+			if (t instanceof FolkToken)
+				return ((FolkToken) t).getType();
+		return null;
 	}
 }

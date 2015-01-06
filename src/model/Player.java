@@ -1,5 +1,6 @@
 package model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -7,7 +8,7 @@ import modelExceptions.TooFewToken;
 import modelExceptions.TooPoor;
 import modelExceptions.Unreachable;
 
-public class Player {
+public class Player implements Serializable {
 	private String _name;
 	private int _money;
 	private Folk _currentFolk;

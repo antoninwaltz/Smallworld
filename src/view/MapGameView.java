@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 
 import model.Folk;
 import model.Model;
+import model.Player;
 
 
 /**
@@ -46,7 +47,7 @@ public class MapGameView extends JPanel {
 
 	private ArrayList<MouseListener> mouseEvent = new ArrayList<>();
 
-	private JButton _quitGame;
+	private JButton _quitGame, _saveButton;
 
 	// Workaround for non constant window size
 	private int[] computeX(int[] x) {
@@ -95,21 +96,28 @@ public class MapGameView extends JPanel {
 		setDoubleBuffered(true);
 		_quitGame = new JButton("Stopper la partie");
 		_quitGame.setSize(200, 30);
+		_saveButton = new JButton("Sauver la partie");
+		_saveButton.setSize(200, 30);
 		this.add(_quitGame);
+		this.add(_saveButton);
 	}
 	
 	public JButton getQuitButton() {
 		return _quitGame;
 	}
+	
+	public JButton getSaveButton() {
+		return _saveButton;
+	}
 
 	//===========Add every shape here, index ordered===========================
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		int x, y, w, h;
+		int x, y, w, h, i;
 		//====BACKGROUND====//
 		g.drawImage(new ImageIcon(_backgroundImagePath).getImage(), 0, 0,frameWidth, frameHeight, null);
 		//====POLYGONES====//
-		for(int i = 0; i < _polygonList.size(); i++){
+		for(i = 0; i < _polygonList.size(); i++){
 			// ---BACKGROUND--- //
 			if(_m.isOwner(i))
 				g.setColor(new Color(0, 150, 0, 150));
@@ -119,15 +127,44 @@ public class MapGameView extends JPanel {
 				g.setColor(new Color(255, 0, 0, 0));
 			g.fillPolygon(_polygonList.get(i));
 			// ---TokenNumber--- //
-			g.setColor(new Color(0, 0, 0));
-			if (_m.getMap().getCase(i).getTokenNb()!=0)
+			g.setColor(Color.ORANGE);
+			g.setFont(new Font("Helvetica", Font.BOLD, (int)(0.02*frameWidth)));
+			if (_m.getMap().getCase(i).getTokenNb()!=0) {
+				String prefix="./images/folk_icons/";
+				ImageIcon icon = new ImageIcon(prefix+_m.getFolkOnCase(i)+".png");
+				g.drawImage(icon.getImage(),
+						getBarycenterX(i)-(int)(0.025*frameWidth), 
+						getBarycenterY(i)-(int)(0.025*frameWidth),
+						(int)(0.05*frameWidth), 
+						(int)(0.05*frameWidth),
+						null);
 				g.drawString(_m.getMap().getCase(i).getTokenNb()+"",
-					getBarycenterX(i),
-					getBarycenterY(i));
+					getBarycenterX(i)+(int)(0.013*frameWidth),
+					getBarycenterY(i)+(int)(0.017*frameWidth));
+			}
+		}
+		//====PLAYER-LIST====//
+		i = 1;
+		for(Player p : _m.getPlayers()) {
+			if (p != _m.getCurrentPlayer()) {
+				if (p.getCurrentFolk() != null) {
+					String prefix="./images/folk_icons/";
+					ImageIcon icon = new ImageIcon(prefix+p.getCurrentFolk().getName()+".png");
+					g.drawImage(icon.getImage(),
+							(int)(10+0.1*frameWidth*(i))-(int)(0.025*frameWidth), 
+							(int)(0.04*frameHeight)-(int)(0.025*frameWidth),
+							(int)(0.05*frameWidth), 
+							(int)(0.05*frameWidth),
+							null);
+				}
+				g.drawString(p.getName(),
+						(int)(10+0.1*frameWidth*(i++)),
+						(int)(0.04*frameHeight));
+			}
 		}
 		//====FOLK-STACK====//
 		g.setFont(new Font("Helvetica", Font.BOLD, (int)(0.015*frameWidth)));
-		for(int i = 0; i < 5; i++){
+		for(i = 0; i < 5; i++){
 			//BACKGROUND
 			x = (int)_folkList.get(i).getX();
 			y = (int)_folkList.get(i).getY();
@@ -444,6 +481,8 @@ public class MapGameView extends JPanel {
 			drawBoard();
 		}
 		_quitGame.setLocation(frameWidth-210, 10);
+		_saveButton.setLocation(frameWidth-210, 50);
 		repaint();
 	}
+	
 }

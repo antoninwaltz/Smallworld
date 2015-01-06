@@ -1,6 +1,8 @@
 package model;
 
-abstract public class Token {
+import java.io.Serializable;
+
+abstract public class Token implements Serializable {
 	private int _id;
 	private Case _currentCase;
 	private Player _owner;

@@ -1,8 +1,9 @@
 package model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Folk {
+public class Folk implements Serializable {
 	private boolean _inDecline;
 	private int _value;
 	private int _initialTokenNb;

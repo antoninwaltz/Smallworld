@@ -17,6 +17,7 @@ public enum EventType {
 	NEXTPLAYER,
 	
 	//Creation d'un evenement non défini
-	UNDEFINE,
-	
+	UNDEFINE, 
+	SAVE, 
+	LOAD
 }

@@ -58,7 +58,7 @@ public class View extends JFrame implements ActionListener, ComponentListener {
 	 * @see View
 	 */
 	private JButton _backButton;
-	private JButton _newButton, _loadButton, _rulesButton, _exitButton, _addButton, _removeButton ;
+	private JButton _newButton, _loadButton, _saveButton, _rulesButton, _exitButton, _addButton, _removeButton ;
 
 	private JButton _quitGame;
 
@@ -116,6 +116,9 @@ public class View extends JFrame implements ActionListener, ComponentListener {
 
 		_removeButton = _menu.getDelButton();
 		_removeButton.addActionListener(this);
+		
+		_saveButton = _MapGameView.getSaveButton();
+		_saveButton.addActionListener(this);
 
 		_quitGame = _MapGameView.getQuitButton();
 		_quitGame.addActionListener(this);
@@ -145,7 +148,6 @@ public class View extends JFrame implements ActionListener, ComponentListener {
 		}
 		else if (e.getSource() == _backButton || e.getSource() == _quitGame)
 		{
-			System.out.println("TROLL");
 			if (getContentPane() == _MapGameView)
 				setContentPane(_menu);
 			_menu.seeMenu();
@@ -194,6 +196,25 @@ public class View extends JFrame implements ActionListener, ComponentListener {
 					this._eventStack.add(ev);
 				}
 			}
+		} else if (e.getSource() == _saveButton) {
+			String  filename = (String)javax.swing.JOptionPane.showInputDialog(this,
+					"Nom du fichier:",
+					"Fichier",
+					JOptionPane.PLAIN_MESSAGE);
+			if (filename == null || filename == "")
+				filename = "game.save";
+			Event ev = new Event(EventType.SAVE, filename);
+			this._eventStack.add(ev);
+		} else if (e.getSource() == _loadButton) {
+			String  filename = (String)javax.swing.JOptionPane.showInputDialog(this,
+					"Nom du fichier:",
+					"Fichier",
+					JOptionPane.PLAIN_MESSAGE);
+			if (filename == null || filename == "")
+				filename = "game.save";
+			Event ev = new Event(EventType.LOAD, filename);
+			this._eventStack.add(ev);
+			this.setContentPane(_MapGameView);
 		}
 	}
 

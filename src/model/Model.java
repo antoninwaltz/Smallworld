@@ -1,5 +1,15 @@
 package model;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FilterInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -17,7 +27,7 @@ import modelExceptions.Unreachable;
  * 
  * @author Skia
  */
-public class Model {
+public class Model implements Serializable {
 	private Map _map;
 	private ArrayList<Player> _players;
 	private int _playerIndex;
@@ -129,6 +139,11 @@ public class Model {
 		_powerQueue.add(new Power(PowerType.BOSSEURS, 5));
 		_powerQueue.add(new Power(PowerType.SPORTIFS, 3));
 		_powerQueue.add(new Power(PowerType.LITTERAIRES, 4));
+		_powerQueue.add(new Power(PowerType.LITTERAIRES, 4));
+		_powerQueue.add(new Power(PowerType.LITTERAIRES, 4));
+		_powerQueue.add(new Power(PowerType.LITTERAIRES, 4));
+		_powerQueue.add(new Power(PowerType.LITTERAIRES, 4));
+		_powerQueue.add(new Power(PowerType.LITTERAIRES, 4));
 		Collections.shuffle(_powerQueue);
 		System.out.println("OK");
 	}
@@ -226,5 +241,9 @@ public class Model {
 		System.out.println("OK");
 	}
 
+	public String getFolkOnCase(int i) {
+		return _map.getCase(i).getFolkType().toString();
+	}
 
+	
 }

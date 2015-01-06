@@ -1,6 +1,8 @@
 package model;
 
-public class Power {
+import java.io.Serializable;
+
+public class Power implements Serializable {
 	private PowerType _type;
 	private int _initialTokenNb;
 

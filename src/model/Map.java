@@ -1,8 +1,9 @@
 package model;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
-public class Map {
+public class Map implements Serializable {
 	private HashMap<Integer,Case> _map;
 	private int _caseNb;
 	private MapType _type;
