@@ -1,19 +1,20 @@
 package view;
 
 
-import model.Model;
-
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
-import java.awt.event.WindowListener;
 import java.util.ArrayList;
+import java.util.Stack;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+
+import controller.Controller;
+import model.Model;
 
 /**
  * <b>The View class</b>
@@ -34,6 +35,8 @@ public class View extends JFrame implements ActionListener, ComponentListener {
 	 * @see Model
 	 */
 	private Model m;
+	private Controller _c;
+
 
 	/**
 	 * The stack attribute
@@ -61,6 +64,7 @@ public class View extends JFrame implements ActionListener, ComponentListener {
 	private JButton _newButton, _loadButton, _saveButton, _rulesButton, _exitButton, _addButton, _removeButton ;
 
 	private JButton _quitGame;
+
 
 
 
@@ -215,6 +219,15 @@ public class View extends JFrame implements ActionListener, ComponentListener {
 			Event ev = new Event(EventType.LOAD, filename);
 			this._eventStack.add(ev);
 		}
+		//_c.notifyAll();
+		synchronized (_c) {
+			_c.notify();
+		}
+		try {
+			wait();
+		} catch (InterruptedException e1) {
+			e1.printStackTrace();
+		}
 	}
 
 	public synchronized Event popEvent() {
@@ -264,6 +277,11 @@ public class View extends JFrame implements ActionListener, ComponentListener {
 	@Override
 	public void componentShown(ComponentEvent e) {		
 		refresh();		
+	}
+
+	public void setController(Controller c) {
+		_c = c;
+		_MapGameView.setController(c);
 	}
 }
 

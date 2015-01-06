@@ -14,7 +14,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import model.Folk;
+import controller.Controller;
 import model.Model;
 import model.Player;
 
@@ -34,6 +34,7 @@ public class MapGameView extends JPanel {
 	int frameHeight;
 
     private Model _m;
+	private Controller _c;
 
 	//Background
 	private String _backgroundImagePath = "images/gameview.png";
@@ -95,9 +96,9 @@ public class MapGameView extends JPanel {
 		setFocusable(true);
 		setDoubleBuffered(true);
 		_quitGame = new JButton("Stopper la partie");
-		_quitGame.setSize(200, 30);
+		_quitGame.setSize(180, 30);
 		_saveButton = new JButton("Sauver la partie");
-		_saveButton.setSize(200, 30);
+		_saveButton.setSize(180, 30);
 		this.add(_quitGame);
 		this.add(_saveButton);
 	}
@@ -109,7 +110,7 @@ public class MapGameView extends JPanel {
 	public JButton getSaveButton() {
 		return _saveButton;
 	}
-	
+
 
 
 	//===========Add every shape here, index ordered===========================
@@ -122,9 +123,9 @@ public class MapGameView extends JPanel {
 		for(i = 0; i < _polygonList.size(); i++){
 			// ---BACKGROUND--- //
 			if(_m.isOwner(i))
-				g.setColor(new Color(0, 150, 0, 150));
+				g.setColor(new Color(0, 150, 0, 100));
 			else if(_m.canAttack(i) && !_m.isRedeploying())
-				g.setColor(new Color(0, 255, 0, 150));
+				g.setColor(new Color(0, 255, 0, 100));
 			else
 				g.setColor(new Color(255, 0, 0, 0));
 			g.fillPolygon(_polygonList.get(i));
@@ -166,7 +167,7 @@ public class MapGameView extends JPanel {
 		}
 		//====FOLK-STACK====//
 		g.setFont(new Font("Helvetica", Font.BOLD, (int)(0.015*frameWidth)));
-		for(i = 0; i < 5; i++){
+		for(i = 0; i < _folkList.size(); i++){
 			//BACKGROUND
 			x = (int)_folkList.get(i).getX();
 			y = (int)_folkList.get(i).getY();
@@ -388,7 +389,7 @@ public class MapGameView extends JPanel {
 			_polygonList.add(new Polygon(computeX(x[i]), computeY(y[i]), x[i].length));
 		}
 		_folkList.clear();
-		for(int i=0;i<6;i++){
+		for(int i=0;i<_m.getAvailableFolks().size();i++){
 			int X = (int)(0.75*frameWidth);
 			int Y = (int)(0.3*frameHeight+0.11*frameHeight*i);
 			int w = (int)(0.2*frameWidth);
@@ -407,6 +408,10 @@ public class MapGameView extends JPanel {
 				(int)(0.92*frameHeight),
 				(int)(0.22*frameWidth),
 				(int)(0.05*frameHeight));
+		
+
+		_quitGame.setLocation(frameWidth-180, 10);
+		_saveButton.setLocation(frameWidth-340, 10);
 
 		//LISTENERS------------------------------------------------------------------------------------------
 
@@ -430,6 +435,9 @@ public class MapGameView extends JPanel {
 								!mod.isRedeploying()) {
 							_queue.add(new Event(EventType.ATTACKCASE, polId));
 						}
+						synchronized (_c) {
+							_c.notify();
+						}
 					}
 					
 				};
@@ -445,6 +453,9 @@ public class MapGameView extends JPanel {
 							!mod.hasActivePlayerAnActiveFolk()) {
 						_queue.add(new Event(EventType.SELECTFOLKPOWER, folkId));
 					}
+					synchronized (_c) {
+						_c.notify();
+					}
 				};
 			});
 		}
@@ -455,12 +466,18 @@ public class MapGameView extends JPanel {
 						_m.getCurrentPlayer().getNbFreeToken() == 0) {
 					_queue.add(new Event(EventType.NEXTPLAYER));
 				}
+				synchronized (_c) {
+					_c.notify();
+				}
 			};
 		});
 		mouseEvent.add(new MouseAdapter() {
 			public synchronized void mouseClicked(MouseEvent me) {
 				if (_redeploy.contains(me.getPoint())) {
 					_queue.add(new Event(EventType.REDEPLOY));
+				}
+				synchronized (_c) {
+					_c.notify();
 				}
 			};
 		});
@@ -469,12 +486,15 @@ public class MapGameView extends JPanel {
 				if (_toDeline.contains(me.getPoint()) && _m.canDeline()) {
 					_queue.add(new Event(EventType.FOLKTODECLINE));
 				}
+				synchronized (_c) {
+					_c.notify();
+				}
 			};
 		});
 		for(MouseListener m1 : mouseEvent) {
 			this.addMouseListener(m1);
 		}
-	}
+}
 
 	public void refresh(int w, int h) {
 		if (w != frameWidth || h != frameHeight) {
@@ -482,12 +502,13 @@ public class MapGameView extends JPanel {
 			frameHeight = h;
 			drawBoard();
 		}
-		_quitGame.setLocation(frameWidth-210, 10);
-		_saveButton.setLocation(frameWidth-210, 50);
 		repaint();
 	}
 	public void setModel(Model m) {
 		_m = m;
+	}
+	public void setController(Controller c) {
+		_c = c;		
 	}
 	
 }

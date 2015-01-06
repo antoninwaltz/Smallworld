@@ -5,7 +5,6 @@ import view.View;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.Image;
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
@@ -17,14 +16,13 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 import model.Model;
-import model.Player;
 
 
 /**
  * <b>The ViewMenu class</b>
- * 
+ *
  * It defines the menus page
- * 
+ *
  * @author WALTZ Antonin
  */
 
@@ -32,7 +30,7 @@ public class ViewMenu extends JLayeredPane {
 	private static final long serialVersionUID = 1L;
 	int frameWidth;
 	int frameHeight;
-	
+
 	//background of the menu pages
 	/** TODO Vérifier les images */
 	private String titleImagePath = "images/title.png";
@@ -48,38 +46,38 @@ public class ViewMenu extends JLayeredPane {
 	private JButton newButton,loadButton,rulesButton,exitButton,addPlayer,delPlayer;
 	private ArrayList<JLabel> playerList;
 	private Model m;
-	
-	private JScrollPane scrollPanePlain; 
-	
-	
-	
+
+	private JScrollPane scrollPanePlain;
+
+
+
 	public ViewMenu(int w, int h, Model mod){
 		frameWidth = w;
 		frameHeight = h;
 		m = mod;
 		playerList = new ArrayList<>();
-		
+
 		newButton = new JButton("NEW GAME");
 		newButton.setSize(200,30);
-		
+
 		loadButton = new JButton("LOAD GAME");
 		loadButton.setSize(200,30);
-		
+
 		rulesButton = new JButton("RULES");
 		rulesButton.setSize(200,30);
-		
+
 		exitButton = new JButton("EXIT GAME");
 		exitButton.setSize(200,30);
-		
+
 		addPlayer = new JButton("Add new player");
 		addPlayer.setSize(200,30);
-		
+
 		delPlayer = new JButton("Remove player");
 		delPlayer.setSize(200,30);
 
 		backButton = new JButton("RETURN HOME");
 		backButton.setSize(150,30);
-		
+
 		rulesTextArea = new JTextArea(
 				"Dans Small World, chaque joueur dirige la destinée de quelques peuples dans un monde médiéval fantastique. Ce monde imaginaire étant très petit, il n'y a pas de place pour tous les peuples, chacun doit donc lutter pour sa survie." +
 				"\n\n" +
@@ -100,61 +98,61 @@ public class ViewMenu extends JLayeredPane {
 		rulesTextArea.setWrapStyleWord(true);
 		rulesTextArea.setEditable(false);
 		;
-		
-		
-		 
-		scrollPanePlain = new JScrollPane(rulesTextArea); 
-		//scrollPanePlain.setBounds(100, 30, 250, 100);  
+
+
+
+		scrollPanePlain = new JScrollPane(rulesTextArea);
+		//scrollPanePlain.setBounds(100, 30, 250, 100);
 		scrollPanePlain.setVisible(true);
 		scrollPanePlain.setForeground(new Color(255,255,255,150));
 		scrollPanePlain.setBackground(new Color(0,0,0,50));
-		
+
 		/*rulesLabel = new JLabel("Rules :");
 		rulesLabel.setSize(200, 30);
 		rulesLabel.setLocation(frameWidth/2-200,150);*/
-		
+
 		setFocusable(true);
 		setDoubleBuffered(true);
 
 		this.add(backButton,new Integer(1));
 		this.setSize(frameWidth, frameHeight);
-		
+
 		this.setVisible(true);
 	}
-	
+
 	public void paintComponent(Graphics g) {
 		g.drawImage(new ImageIcon(backgroundImagePath).getImage(), 0, 0,frameWidth, frameHeight, null);
 		g.drawImage(new ImageIcon(titleImagePath).getImage(),frameWidth/2-295, 20, null);
 	}
-	
+
 	public JButton getBackButton(){
 		return backButton;
 	}
-	
+
 	public JButton getNewButton() {
 		return newButton;
 	}
-	
+
 	public JButton getLoadButton() {
 		return loadButton;
 	}
-	
+
 	public JButton getRulesButton(){
 		return rulesButton;
 	}
-	
+
 	public JButton getExitButton(){
 		return exitButton;
 	}
-	
+
 	public JButton getAddButton() {
 		return addPlayer;
 	}
-	
+
 	public JButton getDelButton() {
 		return delPlayer;
 	}
-	
+
 	public void refresh(int w, int h) {
 		frameWidth = w;
 		frameHeight = h;
@@ -166,17 +164,17 @@ public class ViewMenu extends JLayeredPane {
 		delPlayer.setLocation(frameWidth-250, 50);
 		backButton.setLocation(frameWidth-200, frameHeight-50);
 		scrollPanePlain.setSize(frameWidth-100, frameHeight-150);
-	
-		
-		
+
+
+
 		if(newButton.isShowing())
 			refreshPlayer();
 		this.revalidate();
 		this.repaint();
-		
-		
+
+
 	}
-	
+
 	private void refreshPlayer() {
 		for(int i=0;i<playerList.size();i++){
 			this.remove(playerList.get(i));
@@ -189,7 +187,7 @@ public class ViewMenu extends JLayeredPane {
 			this.add(playerList.get(i), new Integer(1));
 		}
 	}
-	
+
 	public void seeMenu() {
 		this.removeAll();
 		this.add(newButton);
@@ -204,12 +202,12 @@ public class ViewMenu extends JLayeredPane {
 	public void seeRules() {
 		this.removeAll();
 		//this.add(rulesImageLabel, 1);
-		
+
 		scrollPanePlain.setLocation(50, 50);
-	
+
 		//this.add(rulesTextArea);
-		this.add(scrollPanePlain);  
-		this.add(backButton); 
+		this.add(scrollPanePlain);
+		this.add(backButton);
 		this.refresh(frameWidth, frameHeight);
 	}
 

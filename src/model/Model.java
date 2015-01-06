@@ -1,20 +1,9 @@
 package model;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FilterInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
-import java.util.Random;
 
 import modelExceptions.TooFewToken;
 import modelExceptions.Unreachable;
@@ -37,6 +26,8 @@ public class Model implements Serializable {
 	private LinkedList<Folk> _availableFolk;
 	private boolean _redeploying;
 	private boolean _canDecline;
+	private int _turnCounter;
+	private boolean _finished;
 
 	/**
 	 * <b>Constructor of the model</b> It only build the attributes
@@ -220,10 +211,18 @@ public class Model implements Serializable {
 		_canDecline = true;
 		_activePlayer.flushFreeToken();
 		_playerIndex++;
+		if (_playerIndex == _players.size())
+			_turnCounter++;
+		if (_turnCounter > 10)
+			endGame();
 		_playerIndex %= _players.size();
 		_activePlayer = _players.get(_playerIndex);
 	}
-	
+
+	private void endGame() {
+		_finished = true;
+	}
+
 	public void playerToDeline() {
 		System.out.println(_folkQueue);
 		Folk old = _activePlayer.folkToDecline();

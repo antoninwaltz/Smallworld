@@ -7,8 +7,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import model.Model;
-import modelExceptions.TooFewToken;
-import modelExceptions.Unreachable;
 import view.Event;
 import view.View;
 
@@ -22,7 +20,7 @@ import view.View;
  *
  * @author Skia
  */
-public class Controller {
+public class Controller extends Thread {
 	/**
 	 * The Model attribute
 	 *
@@ -54,18 +52,22 @@ public class Controller {
 	 *
 	 * It synchronizes the view and model in order to have a playable game
 	 */
-	public void run() {
+	public synchronized void run() {
 		Event ev = null;
 		m.newPlayer("Skia");
 		m.newPlayer("Gobelin");
-		m.newPlayer("Swag");
-		m.newPlayer("Bite");
-		m.newPlayer("Pate");
-		m.newPlayer("Troll");
 		v.refresh();
 		while(true) {
 			ev = v.popEvent();
-			if(ev==null) continue;
+			if (ev==null) {
+				try {
+					this.wait();
+					continue;
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				
+			}
 			switch (ev.getEventType()) {
 			case NEWGAME:
 				m.quitGame();
@@ -111,7 +113,10 @@ public class Controller {
 			default:
 				break;
 			}
-			//v.refresh();
+			synchronized (v) {
+				v.notify();
+			}
+			v.refresh();
 		}
 	}
 	

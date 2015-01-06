@@ -1,8 +1,8 @@
 package smallworld;
 
-import controller.Controller;
-import view.View;
 import model.Model;
+import view.View;
+import controller.Controller;
 
 /**
  * The Main class
@@ -13,7 +13,8 @@ public class Main {
 		Model m = new Model();
 		View v = new View(m);
 		Controller c = new Controller(m, v);
-		c.run();
+		v.setController(c);
+		c.start();
 	}
 }
 
