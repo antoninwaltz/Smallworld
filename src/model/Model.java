@@ -58,11 +58,15 @@ public class Model implements Serializable {
 	}
 	
 	public boolean isOwner(int cId) {
-		return _activePlayer.isOwner(_map.getCase(cId));
+		if(_activePlayer!=null)
+			return _activePlayer.isOwner(_map.getCase(cId));
+		return false;
 	}
 	
 	public boolean canAttack(int cId) {
-		return _activePlayer.canAttack(_map.getCase(cId));
+		if(_activePlayer != null)
+			return _activePlayer.canAttack(_map.getCase(cId));
+		return false;
 	}
 	
 	public ArrayList<Player> getPlayers() {

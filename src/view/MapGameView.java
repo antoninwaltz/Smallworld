@@ -109,9 +109,11 @@ public class MapGameView extends JPanel {
 	public JButton getSaveButton() {
 		return _saveButton;
 	}
+	
+
 
 	//===========Add every shape here, index ordered===========================
-	public void paintComponent(Graphics g) {
+	public synchronized void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		int x, y, w, h, i;
 		//====BACKGROUND====//
@@ -483,6 +485,9 @@ public class MapGameView extends JPanel {
 		_quitGame.setLocation(frameWidth-210, 10);
 		_saveButton.setLocation(frameWidth-210, 50);
 		repaint();
+	}
+	public void setModel(Model m) {
+		_m = m;
 	}
 	
 }

@@ -104,12 +104,14 @@ public class Controller {
 				break;
 			case LOAD:
 				load(ev.getString());
-				v.refresh();
+				v.setModel(m);
+				System.out.println("Game loaded");
+				v.initBoard();
 				break;
 			default:
 				break;
 			}
-			v.refresh();
+			//v.refresh();
 		}
 	}
 	

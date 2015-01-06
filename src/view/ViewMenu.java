@@ -165,4 +165,8 @@ public class ViewMenu extends JLayeredPane {
 		this.add(backButton); 
 		this.refresh(frameWidth, frameHeight);
 	}
+
+	public void setModel(Model m2) {
+		m = m2;
+	}
 }

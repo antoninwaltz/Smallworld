@@ -214,7 +214,6 @@ public class View extends JFrame implements ActionListener, ComponentListener {
 				filename = "game.save";
 			Event ev = new Event(EventType.LOAD, filename);
 			this._eventStack.add(ev);
-			this.setContentPane(_MapGameView);
 		}
 	}
 
@@ -224,6 +223,12 @@ public class View extends JFrame implements ActionListener, ComponentListener {
 		else
 			return null;
 	}
+	
+	public void setModel(Model mod) {
+		m = mod;
+		_menu.setModel(m);
+		_MapGameView.setModel(m);
+	}
 
 	public void initBoard() {
 		this._MapGameView.drawBoard();
@@ -231,11 +236,15 @@ public class View extends JFrame implements ActionListener, ComponentListener {
 	}
 
 	public void refresh() {
-		System.out.println("Refreshing...");
-		if(this.getContentPane() == _menu)
+		System.out.print("Refreshing ");
+		if(this.getContentPane() == _menu) {
+			System.out.println("menu...");
 			_menu.refresh(getWidth(), getHeight());
-		else if (this.getContentPane() == _MapGameView)
+		}
+		else if (this.getContentPane() == _MapGameView) {
+			System.out.println("game map...");
 			_MapGameView.refresh(this.getWidth(), this.getHeight()-20);
+		}
 	}
 
 	@Override
