@@ -133,8 +133,35 @@ essentielle de celle-ci. On omet donc les étapes de fin de tour, ainsi que cell
 de l'initialisation et de la fin du jeu, qui ne sont pas \"essentielles\" au déroulement
 d'une partie.
 \newpage
-\chapter{Implémentation}
-Étant donné que l'implémentation n'a pas été complétement terminée, nous la détaillerons dans la version finale du rapport.
+\chapter{Réalisation}
+\section{Menu d'accueil}
+\par
+Au lancement du jeu, l'utilisateur arrive sur la page du menu d'accueil. IL peut alors ajouter où retirer des joueurs, lancer une nouvelle partie, parcourir les règles du jeu, charger une partie déjà existante où encore quitter. Un bouton retour est également disponible afin de pouvoir retourner facilement sur l'accueil suivant la page affichée.
+\section{Durant une partie}
+\par
+Lorsque l'on est en jeu, toutes les actions prévues dans les règles sont réalisables. On peut sélectionner un peuple, conquérir des territoires occupés où non, passer au joueur suivant et enfin passer en déclin. On dispose également des informations courantes, comme le nombre de jetons possédés où le peuple actif. On peut également à tout moment sauvegarder sa partie, quitter le jeu et la recharger via le menu principale. Toute la fenêtre de jeu est également redimensionnable en permanence, les éléments affichés s'adaptant en conséquence.
+\section{Ce qui manque}
+\par
+Tout le jeu est fonctionnel, cependant nous n'avons pas implémenter les jetons spéciaux et les régles des pouvoirs. Ces dernières existent mais ne changent rien au déroulement de la partie. Nous n'affichons également pas les images correspondant à chaque combinaison peuple-pouvoir disponible. De la même manière, nous n'affichons pas les jetons posés dessus par les joueurs ayant sélectionné une combinaison plus haut dans la pile. Il manque également la présence initiale de jetons peuple neutre afin d'empêcher les joueurs de conquérir un trop grand nombre de territoire durant les premiers tours.
+\section{Ce qui est différent du modèle UML}
+\par
+Durant l'implémentation, nous avons préféré changer l'héritage de spécialisation des cases du plateau, des peuples et des pouvoirs afin d'éviter une trop grande quantité de fichier et rendre l'arborescence du projet plus lisible. Désormais ce sont simplement des attributs type dans la sous-classe correspondante.
+\chapter{Bilan}
+\section{Conclusion}
+\par
+Le fait d'avoir à réaliser un jeu rendait le projet ludique et donnait envie de s'investir. Il nous a permis d'appliquer les concepts vus en cours, mais aussi d'avoir à aller chercher plus loin, que ce soit dans la documentation ou les possibilités offertes par le langage Java. Nous avons également dû utiliser des outils de versionnage, la maitrîse de ces outils ne pourra qu'être un plus dans notre carrière professionnelle.
+\section{Améliorations possibles}
+\par
+Nous aurions pu améliorer notre jeu de la façon suivante :
+\begin{itemize}
+\item Nous aurions pu ajouter une musique d'ambiance ainsi que des effets sonores lors d'un évènement.
+\item Il manque la grande carte pour pouvoir contenir un nombre de joueurs plus important.
+\item Il manque l'implémentation des règles des pouvoirs.
+\item Il manque l'affichage des jetons sur la pile de combinaisons.
+\item Il manque l'implémentation des jetons spéciaux.
+\item Le jeu serait plus intéressant si nous avions ajouté davantage de peuples et de pouvoirs.
+\item Une page supplémentaire dans le menu afin de pouvoir configurer des options (graphiques, sons, etc.)
+\end{itemize}
 \newpage
 \chapter{Annexes}
 \section{Diagramme des cas d'utilisation}
