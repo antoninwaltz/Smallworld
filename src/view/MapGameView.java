@@ -133,7 +133,7 @@ public class MapGameView extends JPanel {
 			w = (int)_folkList.get(i).getWidth();
 			h = (int)_folkList.get(i).getHeight();
 			g.setColor(new Color(0, 0, 255));
-			//g.fillRect(x, y, w, h);
+			g.fillRect(x, y, w, h);
 			//TEXT
 			g.setColor(Color.BLACK);
 			x += 10; 
